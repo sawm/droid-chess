@@ -3,6 +3,7 @@
 
     <string name="app_name">droid-chess</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="new_local_game">Local Game</string>
+    <string name="new_online_game">Online Game</string>
 
 </resources>
