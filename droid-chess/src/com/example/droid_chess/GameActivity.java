@@ -2,12 +2,13 @@ package com.example.droid_chess;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -15,22 +16,31 @@ public class GameActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-	    requestWindowFeature(Window.FEATURE_NO_TITLE); 
+//	    requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		// Show the Up button in the action bar.
 		
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		
 		ImageView iv = new ImageView(this);
 		iv.setImageResource(R.drawable.black);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.screen);
-		
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
 		    RelativeLayout.LayoutParams.WRAP_CONTENT,
 		    RelativeLayout.LayoutParams.WRAP_CONTENT);
-		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		iv.setScaleX((float) .5);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		iv.setScaleX((float) (width/8));
+		iv.setScaleY((float) (width/8));
 		
 		rl.addView(iv, lp);
+
+		////////////
+
 		
 		setupActionBar();
 	}

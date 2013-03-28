@@ -7,5 +7,6 @@
     <string name="new_online_game">Online Game</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_chess">Chess</string>
 
 </resources>
