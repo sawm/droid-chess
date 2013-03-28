@@ -1,20 +1,37 @@
 package com.example.droid_chess;
 
-import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+	    requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		// Show the Up button in the action bar.
+		
+		ImageView iv = new ImageView(this);
+		iv.setImageResource(R.drawable.black);
+		RelativeLayout rl = (RelativeLayout) findViewById(R.id.screen);
+		
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+		    RelativeLayout.LayoutParams.WRAP_CONTENT,
+		    RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		iv.setScaleX((float) .5);
+		
+		rl.addView(iv, lp);
+		
 		setupActionBar();
 	}
 
