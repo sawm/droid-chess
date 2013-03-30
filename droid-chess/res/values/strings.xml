@@ -8,5 +8,6 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_chess">Chess</string>
+    <string name="desc">Pawn</string>
 
 </resources>

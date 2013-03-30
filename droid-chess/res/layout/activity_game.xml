@@ -10,25 +10,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GameActivity" >
     
-    <ImageView
-        android:id="@+id/border"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:clickable="false"
-        android:longClickable="false"
-        android:scaleType="fitStart"
-        android:src="@drawable/background" />
+<!--     <ImageView -->
+<!--         android:id="@+id/border" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentBottom="true" -->
+<!--         android:layout_alignParentLeft="true" -->
+<!--         android:layout_alignParentRight="true" -->
+<!--         android:layout_alignParentTop="true" -->
+<!--         android:clickable="false" -->
+<!--         android:longClickable="false" -->
+<!--         android:scaleType="fitStart" -->
+<!--         android:src="@drawable/background" /> -->
 
     <ImageView
+        android:contentDescription="@string/desc"
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/imageView1"
         android:layout_marginLeft="137dp"
         android:layout_marginTop="144dp"
         android:scaleX=".50"

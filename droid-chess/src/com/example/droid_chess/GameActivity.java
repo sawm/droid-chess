@@ -7,41 +7,59 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-//	    requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		// Show the Up button in the action bar.
-		
+
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		int width = size.x;
-		int height = size.y;
-		
-		ImageView iv = new ImageView(this);
-		iv.setImageResource(R.drawable.black);
-		RelativeLayout rl = (RelativeLayout) findViewById(R.id.screen);
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-		    RelativeLayout.LayoutParams.WRAP_CONTENT,
-		    RelativeLayout.LayoutParams.WRAP_CONTENT);
-		lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		iv.setScaleX((float) (width/8));
-		iv.setScaleY((float) (width/8));
-		
-		rl.addView(iv, lp);
 
-		////////////
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
+		Point position = new Point();
+		position.x = 0;
+		position.y = 0;
+		ImageView[][] squareArray = new ImageView[8][8];
+		String color;
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				squareArray[x][y] = new ImageView(this);
+				if ((x + y) % 2 == 0) {
+					squareArray[x][y].setImageResource(R.drawable.white);
+					color = "white";
+				} else {
+					squareArray[x][y].setImageResource(R.drawable.black);
+					color = "black";
+				}
 
-		
+				squareArray[x][y].setScaleX(width / 8);
+				squareArray[x][y].setScaleY(width / 8);
+
+				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				squareParams.leftMargin = position.x;
+				squareParams.topMargin = position.y;
+				position.x += width / 8;
+				layout.addView(squareArray[x][y], squareParams);
+				System.out.println("[" + x + "][" + y + "] " + color + " ("
+						+ position.x + ", " + position.y + ")");
+			}
+			position.x = 0;
+			position.y += width / 8;
+		}
+
 		setupActionBar();
 	}
 
