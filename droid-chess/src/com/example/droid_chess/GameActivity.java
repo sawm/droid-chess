@@ -32,24 +32,19 @@ public class GameActivity extends Activity {
 		position.x = 0;
 		position.y = 0;
 		ImageView[][] squareArray = new ImageView[8][8];
-		String color;
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
 				squareArray[x][y] = new ImageView(this);
 				if ((x + y) % 2 == 0) {
 					squareArray[x][y].setImageResource(R.drawable.white);
-					color = "white";
 				} else {
 					squareArray[x][y].setImageResource(R.drawable.black);
-					color = "black";
 				}
 				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(width/8, width/8);
 				squareParams.leftMargin = position.x;
 				squareParams.topMargin = position.y;
 				position.x += width / 8;
 				layout.addView(squareArray[x][y], squareParams);
-				System.out.println("[" + x + "][" + y + "] " + color + " ("
-						+ position.x + ", " + position.y + ")");
 			}
 			position.x = 0;
 			position.y += width / 8;
@@ -91,18 +86,4 @@ public class GameActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus){
-		super.onWindowFocusChanged(hasFocus);
-		for(int x = 0; x < 8; x++){
-			for(int y = 0; y < 8; y++){
-				View image = new View(this); 
-				image.findViewWithTag("square"+x+y);
-				System.out.println(image.getTag());
-				//System.out.println("("+x+", "+y+"): ("+image.getWidth()+", "+image.getHeight()+")");
-			}
-		}
-	}
-
 }
