@@ -10,6 +10,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,13 +43,7 @@ public class GameActivity extends Activity {
 					squareArray[x][y].setImageResource(R.drawable.black);
 					color = "black";
 				}
-
-				squareArray[x][y].setScaleX(width / 8);
-				squareArray[x][y].setScaleY(width / 8);
-
-				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(
-						RelativeLayout.LayoutParams.WRAP_CONTENT,
-						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(width/8, width/8);
 				squareParams.leftMargin = position.x;
 				squareParams.topMargin = position.y;
 				position.x += width / 8;
@@ -95,6 +90,19 @@ public class GameActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus){
+		super.onWindowFocusChanged(hasFocus);
+		for(int x = 0; x < 8; x++){
+			for(int y = 0; y < 8; y++){
+				View image = new View(this); 
+				image.findViewWithTag("square"+x+y);
+				System.out.println(image.getTag());
+				//System.out.println("("+x+", "+y+"): ("+image.getWidth()+", "+image.getHeight()+")");
+			}
+		}
 	}
 
 }
