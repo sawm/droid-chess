@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 
 public class GameActivity extends Activity implements View.OnClickListener {
-
+	//test comment
 	ImageView[][] squareArray;
 	ImageView[] white;
 	ImageView[] black;
