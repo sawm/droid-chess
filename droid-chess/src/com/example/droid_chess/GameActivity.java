@@ -61,49 +61,50 @@ public class GameActivity extends Activity implements View.OnClickListener {
 		
 
 		///////////////////////////////////////////////////////////////////////
-		//Setting up the pieces
+		//Setting up the pieces, the content description of each piece is a set
+		//of flags. The flags are <color>:<type>:<location>
 		///////////////////////////////////////////////////////////////////////
 		ImageView[] white = new ImageView[16];
 		white[0] = new ImageView(this); white[0].setImageResource(R.drawable.rook);
-		white[0].setId(11);
+		white[0].setContentDescription("1:1:11");
 		white[1] = new ImageView(this);	white[1].setImageResource(R.drawable.knight);
-		white[0].setId(12);
+		white[1].setContentDescription("1:2:12");
 		white[2] = new ImageView(this);	white[2].setImageResource(R.drawable.bishop);
-		white[0].setId(13);
+		white[2].setContentDescription("1:3:13");
 		white[3] = new ImageView(this);	white[3].setImageResource(R.drawable.king);
-		white[0].setId(14);
+		white[3].setContentDescription("1:4:14");
 		white[4] = new ImageView(this);	white[4].setImageResource(R.drawable.queen);
-		white[0].setId(15);
+		white[4].setContentDescription("1:5:15");
 		white[5] = new ImageView(this);	white[5].setImageResource(R.drawable.bishop);
-		white[0].setId(16);
+		white[5].setContentDescription("1:3:16");
 		white[6] = new ImageView(this);	white[6].setImageResource(R.drawable.knight);
-		white[0].setId(17);
+		white[6].setContentDescription("1:2:17");
 		white[7] = new ImageView(this); white[7].setImageResource(R.drawable.rook);
-		white[0].setId(18);
+		white[7].setContentDescription("1:1:18");
 
 		ImageView[] black = new ImageView[16];
 		black[0] = new ImageView(this); black[0].setImageResource(R.drawable.rook);
-		black[0].setId(21);
+		black[0].setContentDescription("2:1:81");
 		black[1] = new ImageView(this);	black[1].setImageResource(R.drawable.knight);
-		black[0].setId(22);
+		black[1].setContentDescription("2:2:82");
 		black[2] = new ImageView(this);	black[2].setImageResource(R.drawable.bishop);
-		black[0].setId(23);
+		black[2].setContentDescription("2:3:83");
 		black[3] = new ImageView(this);	black[3].setImageResource(R.drawable.queen);
-		black[0].setId(24);
+		black[3].setContentDescription("2:5:84");
 		black[4] = new ImageView(this);	black[4].setImageResource(R.drawable.king);
-		black[0].setId(25);
+		black[4].setContentDescription("2:4:85");
 		black[5] = new ImageView(this);	black[5].setImageResource(R.drawable.bishop);
-		black[0].setId(26);
+		black[5].setContentDescription("2:3:86");
 		black[6] = new ImageView(this);	black[6].setImageResource(R.drawable.knight);
-		black[0].setId(27);
+		black[6].setContentDescription("2:2:87");
 		black[7] = new ImageView(this); black[7].setImageResource(R.drawable.rook);
-		black[0].setId(28);
+		black[7].setContentDescription("2:1:88");
 		
 		for (int x = 8; x<16 ; x++){
 			white[x] = new ImageView(this);	white[x].setImageResource(R.drawable.pawn);	
-			white[0].setId(19);
+			white[x].setContentDescription("1:6:2" + (x-7));
 			black[x] = new ImageView(this);	black[x].setImageResource(R.drawable.pawn);	
-			black[0].setId(29);	
+			black[x].setContentDescription("2:6:7" + (x-7));	
 		}
 		
 		for (int x = 0 ; x<16 ; x++){
@@ -178,7 +179,40 @@ public class GameActivity extends Activity implements View.OnClickListener {
 	@Override
 	public void onClick(View view) {
 		Context context = getApplicationContext();
+		String message = "";
 		int duration = Toast.LENGTH_SHORT;
-		Toast.makeText(context, "" + view.getId(), duration).show();
+		//Toast.makeText(context, "" + view.getContentDescription(), duration).show();
+		
+		if (Integer.parseInt(((String) view.getContentDescription()).split(":")[0]) == 1) {
+			message += "white";
+		} else if (Integer.parseInt(((String) view.getContentDescription()).split(":")[0]) == 2) {
+			message += "black";
+		} else {
+			message += "Invalid Color Code";
+		}
+		switch (Integer.parseInt(((String) view.getContentDescription()).split(":")[1])){
+		case 1:
+			Toast.makeText(context, message + "Rook", duration).show();
+			break;
+		case 2:
+			Toast.makeText(context, message + "Knight", duration).show();
+			break;
+		case 3:
+			Toast.makeText(context, message + "Bishop", duration).show();
+			break;
+		case 4:
+			Toast.makeText(context, message + "King", duration).show();
+			break;
+		case 5:
+			Toast.makeText(context, message + "Queen", duration).show();
+			break;
+		case 6:
+			Toast.makeText(context, message + "Pawn", duration).show();
+			break;
+		default:
+			Toast.makeText(context, message + "Invalid Piece Code", duration).show();
+			
+			
+		}
 	}
 }
