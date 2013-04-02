@@ -58,30 +58,25 @@ public class GameActivity extends Activity {
 			position.y += width / 8;
 		}
 		
-		
+
+		///////////////////////////////////////////////////////////////////////
+		//Setting up the pieces, only able to set up first row so far
+		///////////////////////////////////////////////////////////////////////
 		ImageView[] white = new ImageView[16];
-		white[0] = new ImageView(this);
-		white[0].setImageResource(R.drawable.rook);
-		white[1] = new ImageView(this);
-		white[1].setImageResource(R.drawable.knight);
-		white[2] = new ImageView(this);
-		white[2].setImageResource(R.drawable.bishop);
-		white[3] = new ImageView(this);
-		white[3].setImageResource(R.drawable.king);
-		white[4] = new ImageView(this);
-		white[4].setImageResource(R.drawable.queen);
-		white[5] = new ImageView(this);
-		white[5].setImageResource(R.drawable.bishop);
-		white[6] = new ImageView(this);
-		white[6].setImageResource(R.drawable.knight);
+		white[0] = new ImageView(this); white[0].setImageResource(R.drawable.rook);
+		white[1] = new ImageView(this);	white[1].setImageResource(R.drawable.knight);
+		white[2] = new ImageView(this);	white[2].setImageResource(R.drawable.bishop);
+		white[3] = new ImageView(this);	white[3].setImageResource(R.drawable.king);
+		white[4] = new ImageView(this);	white[4].setImageResource(R.drawable.queen);
+		white[5] = new ImageView(this);	white[5].setImageResource(R.drawable.bishop);
+		white[6] = new ImageView(this);	white[6].setImageResource(R.drawable.knight);
 		for (int x = 7; x<16 ; x++){
-			white[x] = new ImageView(this);
-			white[x].setImageResource(R.drawable.pawn);			
+			white[x] = new ImageView(this);	white[x].setImageResource(R.drawable.pawn);			
 		}
 
 		position.x = 0;
 		position.y = 0;
-		for (int y = 0; y < 2; y++ ){
+		//for (int y = 0; y < 2; y++ ){
 			for (int x = 0; x < 8; x++) {
 				RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(width/8,width/8);
 				pieceParams.leftMargin=position.x;
@@ -91,8 +86,12 @@ public class GameActivity extends Activity {
 			}
 			//position.x = 0;
 			//position.y = width / 8;
-		}
+		//}
 		
+
+		///////////////////////////////////////////////////////////////////////	
+		//experiment code to test colorfilters, will be removed upon completion
+		///////////////////////////////////////////////////////////////////////
 		ImageView rook = new ImageView(this);
 		rook.setImageResource(R.drawable.king);
 		rook.setColorFilter(0xff222222,PorterDuff.Mode.SRC_ATOP);
