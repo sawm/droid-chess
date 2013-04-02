@@ -230,7 +230,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			break;
 		default:
 			Toast.makeText(context, message + " Invalid Piece Code (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			
+			//test
 			
 		}
 	}
