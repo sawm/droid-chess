@@ -140,37 +140,17 @@ public class GameActivity extends Activity implements View.OnClickListener {
 				layout.addView(black[x],pieceParams);
 			}
 		
-		
-			pieceLayout = new char[][] {{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'},
-					{'n','n','n','n','n','n','n','n'}};
 					
-//			for (int y = 0 ; y < 8 ; y++){
-//				for (int x = 0 ; x < 8 ; x++){
-//					pieceLayout[y][x] = 'n';
-//				}
-//			}
-			for (int x = 0 ; x < 16 ; x ++){
-				pieceLayout[getPieceParams(white[x],3)-1][getPieceParams(white[x],2)-1]='w';
-			}
-			for (int x = 0 ; x < 16 ; x ++){
-				pieceLayout[getPieceParams(black[x],3)-1][getPieceParams(black[x],2)-1]='w';
-			}
+			resetBoard();
 
-Toast.makeText(getApplicationContext(), "" + pieceLayout[0][0] + pieceLayout[0][1] + pieceLayout[0][2] + pieceLayout[0][3] + pieceLayout[0][4] + pieceLayout[0][5] + pieceLayout[0][6] + pieceLayout[0][7] + "\n" +
-pieceLayout[1][0] + pieceLayout[1][1] + pieceLayout[1][2] + pieceLayout[1][3] + pieceLayout[1][4] + pieceLayout[1][5] + pieceLayout[1][6] + pieceLayout[1][7] + "\n" +
-pieceLayout[2][0] + pieceLayout[2][1] + pieceLayout[2][2] + pieceLayout[2][3] + pieceLayout[2][4] + pieceLayout[2][5] + pieceLayout[2][6] + pieceLayout[2][7] + "\n" +
-pieceLayout[3][0] + pieceLayout[3][1] + pieceLayout[3][2] + pieceLayout[3][3] + pieceLayout[3][4] + pieceLayout[3][5] + pieceLayout[3][6] + pieceLayout[3][7] + "\n" +
-pieceLayout[4][0] + pieceLayout[4][1] + pieceLayout[4][2] + pieceLayout[4][3] + pieceLayout[4][4] + pieceLayout[4][5] + pieceLayout[4][6] + pieceLayout[4][7] + "\n" +
-pieceLayout[5][0] + pieceLayout[5][1] + pieceLayout[5][2] + pieceLayout[5][3] + pieceLayout[5][4] + pieceLayout[5][5] + pieceLayout[5][6] + pieceLayout[5][7] + "\n" +
-pieceLayout[6][0] + pieceLayout[6][1] + pieceLayout[6][2] + pieceLayout[6][3] + pieceLayout[6][4] + pieceLayout[6][5] + pieceLayout[6][6] + pieceLayout[6][7] + "\n" +
-pieceLayout[7][0] + pieceLayout[7][1] + pieceLayout[7][2] + pieceLayout[7][3] + pieceLayout[7][4] + pieceLayout[7][5] + pieceLayout[7][6] + pieceLayout[7][7]
-,Toast.LENGTH_LONG).show();		setupActionBar();
+			String message = "";
+			for (int y = 0 ; y < 8 ; y++){
+				for (int x = 0 ; x < 8 ; x++){
+					message += squareArray[y][x].getContentDescription();
+				}
+				message +="\n";
+			}			
+			Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();		setupActionBar();
 	}
 
 	/**
@@ -249,7 +229,23 @@ pieceLayout[7][0] + pieceLayout[7][1] + pieceLayout[7][2] + pieceLayout[7][3] + 
 		}
 	}
 	
-	private int getPieceParams(View view, int param){
+	private int getPieceParams(View view, int param)//Gets the parameters of each piece <color>:<type>:<xloc>:<yloc>
+	{
 		return Integer.parseInt(((String) view.getContentDescription()).split(":")[param]);
+	}
+
+	private void resetBoard()//Sets the flags on the board to determine what color of piece is where
+{
+		for (int y = 0 ; y < 8 ; y++){
+			for (int x = 0 ; x < 8 ; x++){
+				squareArray[y][x].setContentDescription("n");
+			}
+		}
+		for (int x = 0 ; x < 16 ; x ++){
+			squareArray[getPieceParams(white[x],3)-1][getPieceParams(white[x],2)-1].setContentDescription("w");
+		}
+		for (int x = 0 ; x < 16 ; x ++){
+			squareArray[getPieceParams(black[x],3)-1][getPieceParams(black[x],2)-1].setContentDescription("b");
+		}
 	}
 }
