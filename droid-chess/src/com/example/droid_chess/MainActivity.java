@@ -8,10 +8,14 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 
+	public static boolean debugging;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        debugging = false;
+        
     }
 
 

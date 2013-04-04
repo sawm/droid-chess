@@ -21,7 +21,8 @@ public class GameActivity extends Activity implements View.OnClickListener {
 	ImageView[][] squareArray;
 	ImageView[] white;
 	ImageView[] black;
-	char pieceLayout[][];
+	
+	public static boolean debugging;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +36,25 @@ public class GameActivity extends Activity implements View.OnClickListener {
 		Point size = new Point();
 		display.getSize(size);
 		int width = size.x;
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
+		Point position = new Point();
 		
 		///////////////////////////////////////////////////////////////////////
 		//Create the board layout
 		///////////////////////////////////////////////////////////////////////
-		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
-		Point position = new Point();
+		createBoardLayout(width, position, layout);
+		setupPieceImageViews();
+		displayPieces(width, position, layout);
+		///////////////////////////////////////////////////////////////////////
+		//Debugging code, flashes an array map to see where pieces are located
+		///////////////////////////////////////////////////////////////////////
+		resetBoard();
+
+		if (debugging){displayDebugBoard();}
+	}
+	private void createBoardLayout(int width, Point position, RelativeLayout layout){
 		position.x = 0;
-		position.y = 0;
+		position.y = 0;		
 		squareArray = new ImageView[8][8];
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
@@ -62,10 +74,8 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			position.y += width / 8;
 		} 
 
-		///////////////////////////////////////////////////////////////////////
-		//Setting up the pieces, the content description of each piece is a set
-		//of flags. The flags are <color>:<type>:x-location:y-location
-		///////////////////////////////////////////////////////////////////////
+	}
+	private void setupPieceImageViews(){
 		white = new ImageView[16];
 		white[0] = new ImageView(this); white[0].setImageResource(R.drawable.rook);
 		white[0].setContentDescription("1:1:0:0");
@@ -116,7 +126,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			black[x].setOnClickListener(this);
 			
 		}
-		
+
+	}
+	private void displayPieces(int width, Point position, RelativeLayout layout){
 		position.x = 0;
 		position.y = 0;
 			for (int x = 0; x < 16; x++) {
@@ -138,20 +150,18 @@ public class GameActivity extends Activity implements View.OnClickListener {
 				position.y = (7 *(width/8)) - ((width / 8) * ((int) Math.floor((x+1) / 8)));
 				layout.addView(black[x],pieceParams);
 			}
-		
-					
-			resetBoard();
 
-			String message = "";
-			for (int y = 0 ; y < 8 ; y++){
-				for (int x = 0 ; x < 8 ; x++){
-					message += squareArray[y][x].getContentDescription();
-				}
-				message +="\n";
-			}			
-			Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();		setupActionBar();
 	}
-
+	private void displayDebugBoard(){
+		String message = "";
+		for (int y = 0 ; y < 8 ; y++){
+			for (int x = 0 ; x < 8 ; x++){
+				message += squareArray[y][x].getContentDescription();
+			}
+			message +="\n";
+		}			
+	Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();		setupActionBar();
+	}
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -216,9 +226,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			for(int x = piecePos.x+1; x < 8; x++){ //positive x direction
 				System.out.println(Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()));
 				if( getSquareVal(x,piecePos.y) == 0 ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 				} else if( getSquareVal(x,piecePos.y) == opposing_color ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 					break;
 				} else {
 					 break;
@@ -226,9 +236,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int y = piecePos.y+1; y < 8; y++){ //negative y direction
 				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -236,9 +246,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int x = piecePos.x-1; x >= 0; x--){ //negative x direction
 				if( getSquareVal(x,piecePos.y) == 0 ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 				} else if( getSquareVal(x,piecePos.y) == opposing_color ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -246,9 +256,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int y = piecePos.y-1; y >= 0; y--){ //positive y direction
 				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -261,28 +271,28 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			resetColorFilter();
 			//System.out.println("("+(piecePos.x+2)+","+(piecePos.y+1)+")"+getSquareVal(piecePos.x+2,piecePos.y+1));
 			if(piecePos.x+2 <= 7 && piecePos.y+1 <=7 && getSquareVal(piecePos.x+2,piecePos.y+1) != active_color){
-				squareArray[piecePos.x+2][piecePos.y+1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x+2][piecePos.y+1],0xAAFF000);
 			}
 			if(piecePos.x+1 <= 7 && piecePos.y+2 <=7 && getSquareVal(piecePos.x+1,piecePos.y+2) != active_color){
-				squareArray[piecePos.x+1][piecePos.y+2].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x+1][piecePos.y+2],0xAAFF000);
 			}
 			if(piecePos.x-2 >= 0 && piecePos.y+1 <=7 && getSquareVal(piecePos.x-2,piecePos.y+1) != active_color){
-				squareArray[piecePos.x-2][piecePos.y+1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x-2][piecePos.y+1],0xAAFF000);
 			}
 			if(piecePos.x-1 >= 0 && piecePos.y+2 <=7 && getSquareVal(piecePos.x-1,piecePos.y+2) != active_color){
-				squareArray[piecePos.x-1][piecePos.y+2].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x-1][piecePos.y+2],0xAAFF000);
 			}
 			if(piecePos.x+2 <= 7 && piecePos.y-1 >=0 && getSquareVal(piecePos.x+2,piecePos.y-1) != active_color){
-				squareArray[piecePos.x+2][piecePos.y-1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x+2][piecePos.y-1],0xAAFF000);
 			}
 			if(piecePos.x+1 <= 7 && piecePos.y-2 >=0 && getSquareVal(piecePos.x+1,piecePos.y-2) != active_color){
-				squareArray[piecePos.x+1][piecePos.y-2].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x+1][piecePos.y-2],0xAAFF000);
 			}
 			if(piecePos.x-2 >= 0 && piecePos.y-1 >=0 && getSquareVal(piecePos.x-2,piecePos.y-1) != active_color){
-				squareArray[piecePos.x-2][piecePos.y-1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x-2][piecePos.y-1],0xAAFF000);
 			}
 			if(piecePos.x-1 >= 0 && piecePos.y-2 >=0 && getSquareVal(piecePos.x-1,piecePos.y-2) != active_color){
-				squareArray[piecePos.x-1][piecePos.y-2].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x-1][piecePos.y-2],0xAAFF000);
 			}
 			break;
 		case 3:
@@ -292,7 +302,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			{
 				int inc=1;
 				while (piecePos.x+inc <= 7 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x+inc,piecePos.y+inc)!= active_color){
-					squareArray[piecePos.x+inc][piecePos.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x+inc][piecePos.y+inc],0xAAFF000);
 					if (getSquareVal(piecePos.x+inc,piecePos.y+inc) == opposing_color) {break;}
 					inc ++;
 				}
@@ -300,7 +310,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			{
 				int inc=1;
 				while (piecePos.x-inc >= 0 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x-inc,piecePos.y+inc)!= active_color){
-					squareArray[piecePos.x-inc][piecePos.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x-inc][piecePos.y+inc],0xAAFF000);
 					if (getSquareVal(piecePos.x-inc,piecePos.y+inc) == opposing_color) {break;}
 					inc ++;
 				}
@@ -308,7 +318,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			{
 				int inc=1;
 				while (piecePos.x+inc <= 7 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x+inc,piecePos.y-inc)!= active_color){
-					squareArray[piecePos.x+inc][piecePos.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x+inc][piecePos.y-inc],0xAAFF000);
 					if (getSquareVal(piecePos.x+inc,piecePos.y-inc) == opposing_color) {break;}
 					inc ++;
 				}
@@ -316,7 +326,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			{
 				int inc=1;
 				while (piecePos.x-inc >= 0 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x-inc,piecePos.y-inc)!= active_color){
-					squareArray[piecePos.x-inc][piecePos.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x-inc][piecePos.y-inc],0xAAFF000);
 					if (getSquareVal(piecePos.x-inc,piecePos.y-inc) == opposing_color) {break;}
 					inc ++;
 				}
@@ -327,16 +337,16 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			Toast.makeText(context, message + " King (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
 			resetColorFilter();
 			if(piecePos.x+1 <= 7 && getSquareVal(piecePos.x+1, piecePos.y) != active_color){
-				squareArray[piecePos.x+1][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x+1][piecePos.y],0xAAFF000);
 			}
 			if(piecePos.x-1 >=0 && getSquareVal(piecePos.x-1, piecePos.y) != active_color){
-				squareArray[piecePos.x-1][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x-1][piecePos.y],0xAAFF000);
 			}
 			if(piecePos.y+1 <= 7 && getSquareVal(piecePos.x, piecePos.y+1) != active_color){
-				squareArray[piecePos.x][piecePos.y+1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x][piecePos.y+1],0xAAFF000);
 			}
 			if(piecePos.y-1 >= 0 && getSquareVal(piecePos.x, piecePos.y-1) != active_color){
-				squareArray[piecePos.x][piecePos.y-1].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x][piecePos.y-1],0xAAFF000);
 			}
 			break;
 		case 5:
@@ -345,25 +355,25 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			resetColorFilter();
 				int inc=1;
 				while (piecePos.x+inc <= 7 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x+inc,piecePos.y+inc)!= active_color){
-					squareArray[piecePos.x+inc][piecePos.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x+inc][piecePos.y+inc],0xAAFF000);
 					if (getSquareVal(piecePos.x+inc,piecePos.y+inc) == opposing_color) {break;}
 					inc ++;
 				}
 				inc=1;
 				while (piecePos.x-inc >= 0 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x-inc,piecePos.y+inc)!= active_color){
-					squareArray[piecePos.x-inc][piecePos.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x-inc][piecePos.y+inc],0xAAFF000);
 					if (getSquareVal(piecePos.x-inc,piecePos.y+inc) == opposing_color) {break;}
 					inc ++;
 				}
 				inc=1;
 				while (piecePos.x+inc <= 7 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x+inc,piecePos.y-inc)!= active_color){
-					squareArray[piecePos.x+inc][piecePos.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x+inc][piecePos.y-inc],0xAAFF000);
 					if (getSquareVal(piecePos.x+inc,piecePos.y-inc) == opposing_color) {break;}
 					inc ++;
 				}
 				inc=1;
 				while (piecePos.x-inc >= 0 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x-inc,piecePos.y-inc)!= active_color){
-					squareArray[piecePos.x-inc][piecePos.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x-inc][piecePos.y-inc],0xAAFF000);
 					if (getSquareVal(piecePos.x-inc,piecePos.y-inc) == opposing_color) {break;}
 					inc ++;
 				}
@@ -371,9 +381,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			for(int x = piecePos.x+1; x < 8; x++){ //positive x direction
 				System.out.println(Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()));
 				if( getSquareVal(x,piecePos.y) == 0 ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 				} else if( getSquareVal(x,piecePos.y) == opposing_color ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 					break;
 				} else {
 					 break;
@@ -381,9 +391,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int y = piecePos.y+1; y < 8; y++){ //negative y direction
 				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -391,9 +401,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int x = piecePos.x-1; x >= 0; x--){ //negative x direction
 				if( getSquareVal(x,piecePos.y) == 0 ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 				} else if( getSquareVal(x,piecePos.y) == opposing_color ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					squareArray[x][piecePos.y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -401,9 +411,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			for(int y = piecePos.y-1; y >= 0; y--){ //positive y direction
 				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					squareArray[piecePos.x][y].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
 					break;
 				} else {
 					break;
@@ -422,39 +432,38 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 			if(piecePos.y + movement >= 0 && piecePos.y + movement <= 7 && getSquareVal(piecePos.x, piecePos.y+movement) == 0){
 				if(piecePos.x+1 <= 7 && getSquareVal(piecePos.x+1, piecePos.y + movement) == opposing_color){
-					squareArray[piecePos.x+1][piecePos.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x+1][piecePos.y+movement],0xAAFF000);
 				}
 				if(piecePos.x-1 >= 0 && getSquareVal(piecePos.x-1, piecePos.y + movement) == opposing_color){
-					squareArray[piecePos.x-1][piecePos.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x-1][piecePos.y+movement],0xAAFF000);
 				}
 				if(getPieceParams(view,4) == 1 &&  getSquareVal(piecePos.x, piecePos.y+(movement*2)) == 0){
-					squareArray[piecePos.x][piecePos.y+(movement*2)].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+					setSquareParams(squareArray[piecePos.x][piecePos.y+(movement*2)],0xAAFF000);
 					//view.setContentDescription("" + getPieceParams(view,0) + ":" + getPieceParams(view,1) + ":" + getPieceParams(view,2) + ":" + getPieceParams(view,3) + ":0" );
 				}
-				squareArray[piecePos.x][piecePos.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				setSquareParams(squareArray[piecePos.x][piecePos.y+movement],0xAAFF0000);
 			}
 			break;
 		default:
 			Toast.makeText(context, message + " Invalid Piece Code (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
 		}
 	}
-	
+	private void setSquareParams(ImageView view, int colorfilter){
+		view.setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+	}
 	private int getPieceParams(View view, int param)//Gets the parameters of each piece <color>:<type>:<xloc>:<yloc>
 	{
 		return Integer.parseInt(((String) view.getContentDescription()).split(":")[param]);
 	}
-	
 	private Point getPiecePos(View view){
 		Point position = new Point();
 		position.x = Integer.parseInt(((String) view.getContentDescription()).split(":")[2]);
 		position.y = Integer.parseInt(((String) view.getContentDescription()).split(":")[3]);
 		return position;
 	}
-	
 	private int getSquareVal(int x, int y){
 		return Integer.parseInt((String)squareArray[y][x].getContentDescription()); //(x,y) inverted on purpose!
 	}
-	
 	private void resetColorFilter(){
 		for(int y = 0; y < 8; y++){
 			for(int x = 0; x < 8; x++){
@@ -477,4 +486,5 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			squareArray[getPieceParams(black[x],3)][getPieceParams(black[x],2)].setContentDescription("2");
 		}
 	}
+
 }
