@@ -1,5 +1,13 @@
 package com.example.droid_chess;
 
+import piece.Bishop;
+import piece.King;
+import piece.Knight;
+import piece.Pawn;
+import piece.Piece;
+import piece.Queen;
+import piece.Rook;
+import piece.Square;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -16,9 +24,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-
 public class GameActivity extends Activity implements View.OnClickListener {
-	ImageView[][] squareArray;
+	Square[][] squareArray;
 	ImageView[] white;
 	ImageView[] black;
 	
@@ -55,13 +62,14 @@ public class GameActivity extends Activity implements View.OnClickListener {
 	private void createBoardLayout(int width, Point position, RelativeLayout layout){
 		position.x = 0;
 		position.y = 0;		
-		squareArray = new ImageView[8][8];
+		squareArray = new Square[8][8];
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
-				squareArray[x][y] = new ImageView(this);
 				if ((x + y) % 2 == 0) {
+					squareArray[x][y] = new Square(this, new Point(x,y), "white");
 					squareArray[x][y].setImageResource(R.drawable.white);
 				} else {
+					squareArray[x][y] = new Square(this, new Point(x,y), "black");
 					squareArray[x][y].setImageResource(R.drawable.black);
 				}
 				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(width/8, width/8);
@@ -69,53 +77,58 @@ public class GameActivity extends Activity implements View.OnClickListener {
 				squareParams.topMargin = position.y;
 				position.x += width / 8;
 				layout.addView(squareArray[x][y], squareParams);
+				if(y == 0 || y == 1){
+					squareArray[x][y].setState("white");
+				}
+				if(y == 6 || y == 7){
+					squareArray[x][y].setState("black");
+				}
 			}
 			position.x = 0;
 			position.y += width / 8;
 		} 
-
 	}
 	private void setupPieceImageViews(){
 		white = new ImageView[16];
-		white[0] = new ImageView(this); white[0].setImageResource(R.drawable.rook);
+		white[0] = new Rook(this, "white", new Point(0,0)); white[0].setImageResource(R.drawable.rook);
 		white[0].setContentDescription("1:1:0:0");
-		white[1] = new ImageView(this);	white[1].setImageResource(R.drawable.knight);
+		white[1] = new Knight(this, "white", new Point(1,0));	white[1].setImageResource(R.drawable.knight);
 		white[1].setContentDescription("1:2:1:0");
-		white[2] = new ImageView(this);	white[2].setImageResource(R.drawable.bishop);
+		white[2] = new Bishop(this, "white", new Point(2,0));	white[2].setImageResource(R.drawable.bishop);
 		white[2].setContentDescription("1:3:2:0");
-		white[3] = new ImageView(this);	white[3].setImageResource(R.drawable.king);
+		white[3] = new King(this, "white", new Point(3,0));	white[3].setImageResource(R.drawable.king);
 		white[3].setContentDescription("1:4:3:0");
-		white[4] = new ImageView(this);	white[4].setImageResource(R.drawable.queen);
+		white[4] = new Queen(this, "white", new Point(4,0));	white[4].setImageResource(R.drawable.queen);
 		white[4].setContentDescription("1:5:3:3");
-		white[5] = new ImageView(this);	white[5].setImageResource(R.drawable.bishop);
+		white[5] = new Bishop(this, "white", new Point(5,0));	white[5].setImageResource(R.drawable.bishop);
 		white[5].setContentDescription("1:3:5:0");
-		white[6] = new ImageView(this);	white[6].setImageResource(R.drawable.knight);
+		white[6] = new Knight(this, "white", new Point(6,0));	white[6].setImageResource(R.drawable.knight);
 		white[6].setContentDescription("1:2:6:0");
-		white[7] = new ImageView(this); white[7].setImageResource(R.drawable.rook);
+		white[7] = new Rook(this, "white", new Point(7,0)); white[7].setImageResource(R.drawable.rook);
 		white[7].setContentDescription("1:1:7:0");
 
 		black = new ImageView[16];
-		black[0] = new ImageView(this); black[0].setImageResource(R.drawable.rook);
+		black[0] = new Rook(this, "black", new Point(0,7)); black[0].setImageResource(R.drawable.rook);
 		black[0].setContentDescription("2:1:0:7");
-		black[1] = new ImageView(this);	black[1].setImageResource(R.drawable.knight);
+		black[1] = new Knight(this, "black", new Point(1,7));	black[1].setImageResource(R.drawable.knight);
 		black[1].setContentDescription("2:2:1:7");
-		black[2] = new ImageView(this);	black[2].setImageResource(R.drawable.bishop);
+		black[2] = new Bishop(this, "black", new Point(2,7));	black[2].setImageResource(R.drawable.bishop);
 		black[2].setContentDescription("2:3:2:7");
-		black[3] = new ImageView(this);	black[3].setImageResource(R.drawable.queen);
+		black[3] = new Queen(this, "black", new Point(3,7));	black[3].setImageResource(R.drawable.queen);
 		black[3].setContentDescription("2:5:3:7");
-		black[4] = new ImageView(this);	black[4].setImageResource(R.drawable.king);
+		black[4] = new King(this, "black", new Point(4,7));	black[4].setImageResource(R.drawable.king);
 		black[4].setContentDescription("2:4:4:7");
-		black[5] = new ImageView(this);	black[5].setImageResource(R.drawable.bishop);
+		black[5] = new Bishop(this, "black", new Point(5,7));	black[5].setImageResource(R.drawable.bishop);
 		black[5].setContentDescription("2:3:5:7");
-		black[6] = new ImageView(this);	black[6].setImageResource(R.drawable.knight);
+		black[6] = new Knight(this, "black", new Point(6,7));	black[6].setImageResource(R.drawable.knight);
 		black[6].setContentDescription("2:2:6:7");
-		black[7] = new ImageView(this); black[7].setImageResource(R.drawable.rook);
+		black[7] = new Rook(this, "black", new Point(7,7)); black[7].setImageResource(R.drawable.rook);
 		black[7].setContentDescription("2:1:7:7");
 		
 		for (int x = 8; x<16 ; x++){
-			white[x] = new ImageView(this);	white[x].setImageResource(R.drawable.pawn);	
+			white[x] = new Pawn(this, "white", new Point(x-8,1));	white[x].setImageResource(R.drawable.pawn);	
 			white[x].setContentDescription("1:6:" + (x-8) + ":1:1");
-			black[x] = new ImageView(this);	black[x].setImageResource(R.drawable.pawn);	
+			black[x] = new Pawn(this, "black", new Point(x-8,6));	black[x].setImageResource(R.drawable.pawn);	
 			black[x].setContentDescription("2:6:" + (x-8) + ":6:1");	
 		}
 		
@@ -196,274 +209,57 @@ public class GameActivity extends Activity implements View.OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-
 	@Override
 	public void onClick(View view) {
 		Context context = getApplicationContext();
-		String message = "";
-		int duration = Toast.LENGTH_SHORT;
-		Point piecePos = new Point();
-		int active_color = 0, opposing_color = 0;
-		//Toast.makeText(context, "" + view.getContentDescription(), duration).show();
-		
-		if (getPieceParams(view,0) == 1) {
-			message += "White";
-			active_color = 1;
-			opposing_color = 2;
-		} else if (getPieceParams(view,0) == 2) {
-			message += "Black";
-			active_color = 2;
-			opposing_color = 1;
-		} else {
-			message += "Invalid Color Code";
-		}
-		
-		switch (getPieceParams(view,1)){
-		case 1:
-			resetColorFilter();
-			Toast.makeText(context, message + " Rook (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			piecePos = getPiecePos(view);
-			for(int x = piecePos.x+1; x < 8; x++){ //positive x direction
-				System.out.println(Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()));
-				if( getSquareVal(x,piecePos.y) == 0 ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-				} else if( getSquareVal(x,piecePos.y) == opposing_color ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-					break;
-				} else {
-					 break;
-				}
-			}
-			for(int y = piecePos.y+1; y < 8; y++){ //negative y direction
-				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			for(int x = piecePos.x-1; x >= 0; x--){ //negative x direction
-				if( getSquareVal(x,piecePos.y) == 0 ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-				} else if( getSquareVal(x,piecePos.y) == opposing_color ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			for(int y = piecePos.y-1; y >= 0; y--){ //positive y direction
-				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			break;
-		case 2:
-			Toast.makeText(context, message + " Knight (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			piecePos = getPiecePos(view);
-			resetColorFilter();
-			//System.out.println("("+(piecePos.x+2)+","+(piecePos.y+1)+")"+getSquareVal(piecePos.x+2,piecePos.y+1));
-			if(piecePos.x+2 <= 7 && piecePos.y+1 <=7 && getSquareVal(piecePos.x+2,piecePos.y+1) != active_color){
-				setSquareParams(squareArray[piecePos.x+2][piecePos.y+1],0xAAFF000);
-			}
-			if(piecePos.x+1 <= 7 && piecePos.y+2 <=7 && getSquareVal(piecePos.x+1,piecePos.y+2) != active_color){
-				setSquareParams(squareArray[piecePos.x+1][piecePos.y+2],0xAAFF000);
-			}
-			if(piecePos.x-2 >= 0 && piecePos.y+1 <=7 && getSquareVal(piecePos.x-2,piecePos.y+1) != active_color){
-				setSquareParams(squareArray[piecePos.x-2][piecePos.y+1],0xAAFF000);
-			}
-			if(piecePos.x-1 >= 0 && piecePos.y+2 <=7 && getSquareVal(piecePos.x-1,piecePos.y+2) != active_color){
-				setSquareParams(squareArray[piecePos.x-1][piecePos.y+2],0xAAFF000);
-			}
-			if(piecePos.x+2 <= 7 && piecePos.y-1 >=0 && getSquareVal(piecePos.x+2,piecePos.y-1) != active_color){
-				setSquareParams(squareArray[piecePos.x+2][piecePos.y-1],0xAAFF000);
-			}
-			if(piecePos.x+1 <= 7 && piecePos.y-2 >=0 && getSquareVal(piecePos.x+1,piecePos.y-2) != active_color){
-				setSquareParams(squareArray[piecePos.x+1][piecePos.y-2],0xAAFF000);
-			}
-			if(piecePos.x-2 >= 0 && piecePos.y-1 >=0 && getSquareVal(piecePos.x-2,piecePos.y-1) != active_color){
-				setSquareParams(squareArray[piecePos.x-2][piecePos.y-1],0xAAFF000);
-			}
-			if(piecePos.x-1 >= 0 && piecePos.y-2 >=0 && getSquareVal(piecePos.x-1,piecePos.y-2) != active_color){
-				setSquareParams(squareArray[piecePos.x-1][piecePos.y-2],0xAAFF000);
-			}
-			break;
-		case 3:
-			piecePos= getPiecePos(view);
-			Toast.makeText(context, message + " Bishop (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			resetColorFilter();
-			{
-				int inc=1;
-				while (piecePos.x+inc <= 7 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x+inc,piecePos.y+inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x+inc][piecePos.y+inc],0xAAFF000);
-					if (getSquareVal(piecePos.x+inc,piecePos.y+inc) == opposing_color) {break;}
-					inc ++;
-				}
-			}
-			{
-				int inc=1;
-				while (piecePos.x-inc >= 0 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x-inc,piecePos.y+inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x-inc][piecePos.y+inc],0xAAFF000);
-					if (getSquareVal(piecePos.x-inc,piecePos.y+inc) == opposing_color) {break;}
-					inc ++;
-				}
-			}
-			{
-				int inc=1;
-				while (piecePos.x+inc <= 7 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x+inc,piecePos.y-inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x+inc][piecePos.y-inc],0xAAFF000);
-					if (getSquareVal(piecePos.x+inc,piecePos.y-inc) == opposing_color) {break;}
-					inc ++;
-				}
-			}
-			{
-				int inc=1;
-				while (piecePos.x-inc >= 0 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x-inc,piecePos.y-inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x-inc][piecePos.y-inc],0xAAFF000);
-					if (getSquareVal(piecePos.x-inc,piecePos.y-inc) == opposing_color) {break;}
-					inc ++;
-				}
-			}
-			break;
-		case 4:
-			piecePos = getPiecePos(view);
-			Toast.makeText(context, message + " King (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			resetColorFilter();
-			if(piecePos.x+1 <= 7 && getSquareVal(piecePos.x+1, piecePos.y) != active_color){
-				setSquareParams(squareArray[piecePos.x+1][piecePos.y],0xAAFF000);
-			}
-			if(piecePos.x-1 >=0 && getSquareVal(piecePos.x-1, piecePos.y) != active_color){
-				setSquareParams(squareArray[piecePos.x-1][piecePos.y],0xAAFF000);
-			}
-			if(piecePos.y+1 <= 7 && getSquareVal(piecePos.x, piecePos.y+1) != active_color){
-				setSquareParams(squareArray[piecePos.x][piecePos.y+1],0xAAFF000);
-			}
-			if(piecePos.y-1 >= 0 && getSquareVal(piecePos.x, piecePos.y-1) != active_color){
-				setSquareParams(squareArray[piecePos.x][piecePos.y-1],0xAAFF000);
-			}
-			break;
-		case 5:
-			Toast.makeText(context, message + " Queen (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			piecePos = getPiecePos(view);
-			resetColorFilter();
-				int inc=1;
-				while (piecePos.x+inc <= 7 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x+inc,piecePos.y+inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x+inc][piecePos.y+inc],0xAAFF000);
-					if (getSquareVal(piecePos.x+inc,piecePos.y+inc) == opposing_color) {break;}
-					inc ++;
-				}
-				inc=1;
-				while (piecePos.x-inc >= 0 && piecePos.y+inc <= 7 && getSquareVal(piecePos.x-inc,piecePos.y+inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x-inc][piecePos.y+inc],0xAAFF000);
-					if (getSquareVal(piecePos.x-inc,piecePos.y+inc) == opposing_color) {break;}
-					inc ++;
-				}
-				inc=1;
-				while (piecePos.x+inc <= 7 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x+inc,piecePos.y-inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x+inc][piecePos.y-inc],0xAAFF000);
-					if (getSquareVal(piecePos.x+inc,piecePos.y-inc) == opposing_color) {break;}
-					inc ++;
-				}
-				inc=1;
-				while (piecePos.x-inc >= 0 && piecePos.y-inc >= 0 && getSquareVal(piecePos.x-inc,piecePos.y-inc)!= active_color){
-					setSquareParams(squareArray[piecePos.x-inc][piecePos.y-inc],0xAAFF000);
-					if (getSquareVal(piecePos.x-inc,piecePos.y-inc) == opposing_color) {break;}
-					inc ++;
-				}
-			
-			for(int x = piecePos.x+1; x < 8; x++){ //positive x direction
-				System.out.println(Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()));
-				if( getSquareVal(x,piecePos.y) == 0 ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-				} else if( getSquareVal(x,piecePos.y) == opposing_color ){ //Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-					break;
-				} else {
-					 break;
-				}
-			}
-			for(int y = piecePos.y+1; y < 8; y++){ //negative y direction
-				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			for(int x = piecePos.x-1; x >= 0; x--){ //negative x direction
-				if( getSquareVal(x,piecePos.y) == 0 ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == 0){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-				} else if( getSquareVal(x,piecePos.y) == opposing_color ){//Integer.parseInt((String)squareArray[piecePos.y][x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[x][piecePos.y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			for(int y = piecePos.y-1; y >= 0; y--){ //positive y direction
-				if( getSquareVal(piecePos.x,y)==0){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == 0){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-				} else if( getSquareVal(piecePos.x,y)==opposing_color){//Integer.parseInt((String)squareArray[y][piecePos.x].getContentDescription()) == opposing_color){
-					setSquareParams(squareArray[piecePos.x][y],0xAAFF000);
-					break;
-				} else {
-					break;
-				}
-			}
-			break;
-		case 6:
-			int movement = 0;
-			Toast.makeText(context, message + " Pawn (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-			piecePos = getPiecePos(view);
-			resetColorFilter();
-			if(active_color == 1){
-				movement = 1;
-			} else {
-				movement = -1;
-			}
-			if(piecePos.y + movement >= 0 && piecePos.y + movement <= 7 && getSquareVal(piecePos.x, piecePos.y+movement) == 0){
-				if(piecePos.x+1 <= 7 && getSquareVal(piecePos.x+1, piecePos.y + movement) == opposing_color){
-					setSquareParams(squareArray[piecePos.x+1][piecePos.y+movement],0xAAFF000);
-				}
-				if(piecePos.x-1 >= 0 && getSquareVal(piecePos.x-1, piecePos.y + movement) == opposing_color){
-					setSquareParams(squareArray[piecePos.x-1][piecePos.y+movement],0xAAFF000);
-				}
-				if(getPieceParams(view,4) == 1 &&  getSquareVal(piecePos.x, piecePos.y+(movement*2)) == 0){
-					setSquareParams(squareArray[piecePos.x][piecePos.y+(movement*2)],0xAAFF000);
-					//view.setContentDescription("" + getPieceParams(view,0) + ":" + getPieceParams(view,1) + ":" + getPieceParams(view,2) + ":" + getPieceParams(view,3) + ":0" );
-				}
-				setSquareParams(squareArray[piecePos.x][piecePos.y+movement],0xAAFF0000);
-			}
-			break;
-		default:
-			Toast.makeText(context, message + " Invalid Piece Code (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
-		}
+		view.getMoves(squareArray);
+//		String message = "";
+//		int duration = Toast.LENGTH_SHORT;
+//		//Toast.makeText(context, "" + view.getContentDescription(), duration).show();
+//		switch (getPieceParams(view,1)){
+//		case 1:
+//			resetColorFilter();
+//			Toast.makeText(context, message + " Rook (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//			((Rook) view).getMoves(squareArray);
+//			break;
+//		case 2:
+//			Toast.makeText(context, message + " Knight (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//			resetColorFilter();
+//			((Knight) view).getMoves(squareArray);
+//			break;
+//		case 3:
+//			Toast.makeText(context, message + " Bishop (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//			resetColorFilter();
+//			((Bishop) view).getMoves(squareArray);
+//			break;
+//		case 4:
+//			Toast.makeText(context, message + " King (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//			resetColorFilter();
+//			((King) view).getMoves(squareArray);
+//			break;
+//		case 5:
+//			Toast.makeText(context, message + " Queen (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//			resetColorFilter();
+//			((Queen) view).getMoves(squareArray);
+//			break;
+//		case 6:
+//			resetColorFilter();
+//			((Pawn) view).getMoves(squareArray);
+//			break;
+//		default:
+//			Toast.makeText(context, message + " Invalid Piece Code (" + getPieceParams(view,2) + "," + getPieceParams(view,3) + ")", duration).show();
+//		}
 	}
-	private void setSquareParams(ImageView view, int colorfilter){
-		view.setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+	
+	public void onClick(Piece piece){
+		piece.getMoves(squareArray);
 	}
+
 	private int getPieceParams(View view, int param)//Gets the parameters of each piece <color>:<type>:<xloc>:<yloc>
 	{
 		return Integer.parseInt(((String) view.getContentDescription()).split(":")[param]);
 	}
-	private Point getPiecePos(View view){
-		Point position = new Point();
-		position.x = Integer.parseInt(((String) view.getContentDescription()).split(":")[2]);
-		position.y = Integer.parseInt(((String) view.getContentDescription()).split(":")[3]);
-		return position;
-	}
-	private int getSquareVal(int x, int y){
-		return Integer.parseInt((String)squareArray[y][x].getContentDescription()); //(x,y) inverted on purpose!
-	}
+
 	private void resetColorFilter(){
 		for(int y = 0; y < 8; y++){
 			for(int x = 0; x < 8; x++){
@@ -471,7 +267,6 @@ public class GameActivity extends Activity implements View.OnClickListener {
 			}
 		}
 	}
-
 	private void resetBoard()//Sets the flags on the board to determine what color of piece is where
 {
 		for (int y = 0 ; y < 8 ; y++){
