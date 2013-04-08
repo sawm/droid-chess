@@ -17,132 +17,174 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
-public class GameActivity extends Activity implements View.OnClickListener {
-	Square[][] squareArray;
-	ImageView[] white;
-	ImageView[] black;
+public class GameActivity extends Activity {
+	private Square[][] squareArray;
+	private ImageView[] white;
+	private ImageView[] black;
+
+	OnClickListener pieceListener = new OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			resetColorFilter();
+			resetAvailableMoves();
+			((Piece) view).getMoves(squareArray);
+		}
+	};
 	
+	OnClickListener squareListener = new OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			Square square = (Square) view;
+			if(square.isAvailable()){
+			}
+		}
+	};
+
 	public static boolean debugging;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		
-		///////////////////////////////////////////////////////////////////////
-		//Get width of the screen to properly calculate board size
-		///////////////////////////////////////////////////////////////////////
+
+		// Get width of the screen to properly calculate board size
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		int width = size.x;
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
 		Point position = new Point();
-		
-		///////////////////////////////////////////////////////////////////////
-		//Create the board layout
-		///////////////////////////////////////////////////////////////////////
+
+//		// Create the board layout
 		createBoardLayout(width, position, layout);
 		setupPieceImageViews();
 		displayPieces(width, position, layout);
-		///////////////////////////////////////////////////////////////////////
-		//Debugging code, flashes an array map to see where pieces are located
-		///////////////////////////////////////////////////////////////////////
-		
-
-		//if (debugging){displayDebugBoard();}
 	}
-	private void createBoardLayout(int width, Point position, RelativeLayout layout){
+
+	private void createBoardLayout(int width, Point position,
+			RelativeLayout layout) {
 		position.x = 0;
-		position.y = 0;		
+		position.y = 0;
 		squareArray = new Square[8][8];
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
 				if ((x + y) % 2 == 0) {
-					squareArray[x][y] = new Square(this, new Point(x,y), "white");
+					squareArray[x][y] = new Square(this, new Point(x, y),
+							"white");
 					squareArray[x][y].setImageResource(R.drawable.white);
 				} else {
-					squareArray[x][y] = new Square(this, new Point(x,y), "black");
+					squareArray[x][y] = new Square(this, new Point(x, y),
+							"black");
 					squareArray[x][y].setImageResource(R.drawable.black);
 				}
-				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(width/8, width/8);
+				RelativeLayout.LayoutParams squareParams = new RelativeLayout.LayoutParams(
+						width / 8, width / 8);
 				squareParams.leftMargin = position.x;
 				squareParams.topMargin = position.y;
 				position.x += width / 8;
 				layout.addView(squareArray[x][y], squareParams);
-				if(y == 0 || y == 1){
+				squareArray[x][y].setOnClickListener(squareListener);
+				if (y == 0 || y == 1) {
 					squareArray[x][y].setState("white");
 				}
-				if(y == 6 || y == 7){
+				if (y == 6 || y == 7) {
 					squareArray[x][y].setState("black");
 				}
 			}
 			position.x = 0;
 			position.y += width / 8;
-		} 
+		}
 	}
-	private void setupPieceImageViews(){
+
+	private void setupPieceImageViews() {
 		white = new ImageView[16];
-		white[0] = new Rook(this, "white", new Point(0,0)); white[0].setImageResource(R.drawable.rook);
-		white[1] = new Knight(this, "white", new Point(1,0));	white[1].setImageResource(R.drawable.knight);
-		white[2] = new Bishop(this, "white", new Point(2,0));	white[2].setImageResource(R.drawable.bishop);
-		white[3] = new King(this, "white", new Point(3,0));	white[3].setImageResource(R.drawable.king);
-		white[4] = new Queen(this, "white", new Point(4,0));	white[4].setImageResource(R.drawable.queen);
-		white[5] = new Bishop(this, "white", new Point(5,0));	white[5].setImageResource(R.drawable.bishop);
-		white[6] = new Knight(this, "white", new Point(6,0));	white[6].setImageResource(R.drawable.knight);
-		white[7] = new Rook(this, "white", new Point(7,0)); white[7].setImageResource(R.drawable.rook);
+		white[0] = new Rook(this, "white", new Point(0, 0));
+		white[0].setImageResource(R.drawable.rook);
+		white[1] = new Knight(this, "white", new Point(1, 0));
+		white[1].setImageResource(R.drawable.knight);
+		white[2] = new Bishop(this, "white", new Point(2, 0));
+		white[2].setImageResource(R.drawable.bishop);
+		white[3] = new King(this, "white", new Point(3, 0));
+		white[3].setImageResource(R.drawable.king);
+		white[4] = new Queen(this, "white", new Point(4, 0));
+		white[4].setImageResource(R.drawable.queen);
+		white[5] = new Bishop(this, "white", new Point(5, 0));
+		white[5].setImageResource(R.drawable.bishop);
+		white[6] = new Knight(this, "white", new Point(6, 0));
+		white[6].setImageResource(R.drawable.knight);
+		white[7] = new Rook(this, "white", new Point(7, 0));
+		white[7].setImageResource(R.drawable.rook);
 
 		black = new ImageView[16];
-		black[0] = new Rook(this, "black", new Point(0,7)); black[0].setImageResource(R.drawable.rook);
-		black[1] = new Knight(this, "black", new Point(1,7));	black[1].setImageResource(R.drawable.knight);
-		black[2] = new Bishop(this, "black", new Point(2,7));	black[2].setImageResource(R.drawable.bishop);
-		black[3] = new Queen(this, "black", new Point(3,7));	black[3].setImageResource(R.drawable.queen);
-		black[4] = new King(this, "black", new Point(4,7));	black[4].setImageResource(R.drawable.king);
-		black[5] = new Bishop(this, "black", new Point(5,7));	black[5].setImageResource(R.drawable.bishop);
-		black[6] = new Knight(this, "black", new Point(6,7));	black[6].setImageResource(R.drawable.knight);
-		black[7] = new Rook(this, "black", new Point(7,7)); black[7].setImageResource(R.drawable.rook);
-		
-		for (int x = 8; x<16 ; x++){
-			white[x] = new Pawn(this, "white", new Point(x-8,1));	white[x].setImageResource(R.drawable.pawn);	
-			black[x] = new Pawn(this, "black", new Point(x-8,6));	black[x].setImageResource(R.drawable.pawn);	
+		black[0] = new Rook(this, "black", new Point(0, 7));
+		black[0].setImageResource(R.drawable.rook);
+		black[1] = new Knight(this, "black", new Point(1, 7));
+		black[1].setImageResource(R.drawable.knight);
+		black[2] = new Bishop(this, "black", new Point(2, 7));
+		black[2].setImageResource(R.drawable.bishop);
+		black[3] = new Queen(this, "black", new Point(3, 7));
+		black[3].setImageResource(R.drawable.queen);
+		black[4] = new King(this, "black", new Point(4, 7));
+		black[4].setImageResource(R.drawable.king);
+		black[5] = new Bishop(this, "black", new Point(5, 7));
+		black[5].setImageResource(R.drawable.bishop);
+		black[6] = new Knight(this, "black", new Point(6, 7));
+		black[6].setImageResource(R.drawable.knight);
+		black[7] = new Rook(this, "black", new Point(7, 7));
+		black[7].setImageResource(R.drawable.rook);
+
+		for (int x = 8; x < 16; x++) {
+			white[x] = new Pawn(this, "white", new Point(x - 8, 1));
+			white[x].setImageResource(R.drawable.pawn);
+			black[x] = new Pawn(this, "black", new Point(x - 8, 6));
+			black[x].setImageResource(R.drawable.pawn);
 		}
-		
-		for (int x = 0 ; x<16 ; x++){
-			white[x].setColorFilter(0x88ffffff,PorterDuff.Mode.SRC_ATOP);
-			black[x].setColorFilter(0x88000000,PorterDuff.Mode.SRC_ATOP);
-			white[x].setOnClickListener(this);
-			black[x].setOnClickListener(this);
-			
+
+		for (int x = 0; x < 16; x++) {
+			white[x].setColorFilter(0x88ffffff, PorterDuff.Mode.SRC_ATOP);
+			black[x].setColorFilter(0x88000000, PorterDuff.Mode.SRC_ATOP);
+			white[x].setOnClickListener(pieceListener);
+			black[x].setOnClickListener(pieceListener);
+
 		}
 
 	}
-	private void displayPieces(int width, Point position, RelativeLayout layout){
+
+	private void displayPieces(int width, Point position, RelativeLayout layout) {
 		position.x = 0;
 		position.y = 0;
-			for (int x = 0; x < 16; x++) {
-				RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(width/8,width/8);
-				pieceParams.leftMargin=position.x;
-				pieceParams.topMargin=position.y;
-				position.x = (width / 8) * ((x+1) % 8);
-				position.y = (width / 8) * ((int) Math.floor((x+1) / 8));
-				layout.addView(white[x],pieceParams);
-			}
+		for (int x = 0; x < 16; x++) {
+			RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(
+					width / 8, width / 8);
+			pieceParams.leftMargin = position.x;
+			pieceParams.topMargin = position.y;
+			position.x = (width / 8) * ((x + 1) % 8);
+			position.y = (width / 8) * ((int) Math.floor((x + 1) / 8));
+			layout.addView(white[x], pieceParams);
+		}
 
 		position.x = 0;
-		position.y = 7 *(width/8);
-			for (int x = 0; x < 16; x++) {
-				RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(width/8,width/8);
-				pieceParams.leftMargin=position.x;
-				pieceParams.topMargin=position.y;
-				position.x = (width / 8) * ((x+1) % 8);
-				position.y = (7 *(width/8)) - ((width / 8) * ((int) Math.floor((x+1) / 8)));
-				layout.addView(black[x],pieceParams);
-			}
+		position.y = 7 * (width / 8);
+		for (int x = 0; x < 16; x++) {
+			RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(
+					width / 8, width / 8);
+			pieceParams.leftMargin = position.x;
+			pieceParams.topMargin = position.y;
+			position.x = (width / 8) * ((x + 1) % 8);
+			position.y = (7 * (width / 8))
+					- ((width / 8) * ((int) Math.floor((x + 1) / 8)));
+			layout.addView(black[x], pieceParams);
+		}
 
 	}
+
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -170,19 +212,21 @@ public class GameActivity extends Activity implements View.OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onClick(View view){
-		resetColorFilter();
-		((Piece) view).getMoves(squareArray);
-	}
-	
-	private void resetColorFilter(){
-		for(int y = 0; y < 8; y++){
-			for(int x = 0; x < 8; x++){
-				squareArray[x][y].setColorFilter(0x00000000, PorterDuff.Mode.SRC_ATOP);
+	private void resetColorFilter() {
+		for (int y = 0; y < 8; y++) {
+			for (int x = 0; x < 8; x++) {
+				squareArray[x][y].setColorFilter(0x00000000,
+						PorterDuff.Mode.SRC_ATOP);
 			}
 		}
 	}
-
+	
+	private void resetAvailableMoves() {
+		for (int y = 0; y < 8; y++) {
+			for (int x = 0; x < 8; x++) {
+				squareArray[x][y].setAvailable(false);
+			}
+		}
+	}
 
 }

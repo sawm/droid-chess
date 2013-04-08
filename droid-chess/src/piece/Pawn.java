@@ -2,7 +2,6 @@ package piece;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
 public class Pawn extends Piece {
@@ -33,15 +32,15 @@ public class Pawn extends Piece {
 		}
 		if(this.boardPosition.y + movement >= 0 && this.boardPosition.y + movement <= 7 && board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){
 			if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y+movement].getState() == this.opp_color){
-				board[this.boardPosition.x+1][this.boardPosition.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				board[this.boardPosition.x+1][this.boardPosition.y+movement].becomeAvailable(this);
 			}
 			if(this.boardPosition.x-1 >= 0 && board[this.boardPosition.x-1][this.boardPosition.y + movement].getState() == this.opp_color){
-				board[this.boardPosition.x-1][this.boardPosition.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				board[this.boardPosition.x-1][this.boardPosition.y+movement].becomeAvailable(this);
 			}
 			if(this.firstMove == true &&  board[this.boardPosition.x][this.boardPosition.y+(movement*2)].getState() == "empty"){
-				board[this.boardPosition.x][this.boardPosition.y+(movement*2)].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+				board[this.boardPosition.x][this.boardPosition.y+(movement*2)].becomeAvailable(this);
 			}
-			board[this.boardPosition.x][this.boardPosition.y+movement].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
+			board[this.boardPosition.x][this.boardPosition.y+movement].becomeAvailable(this);
 		}		
 	}
 
