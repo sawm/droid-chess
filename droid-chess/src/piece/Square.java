@@ -13,7 +13,7 @@ public class Square extends ImageView {
 	public Square(Context context, Point pos, String col) {
 		super(context);
 		this.position = pos;
-		this.color = col;
+		this.setColor(col);
 		this.state = "empty";
 	}
 
@@ -38,6 +38,14 @@ public class Square extends ImageView {
 	
 	public Point getPosition(){
 		return position;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 }

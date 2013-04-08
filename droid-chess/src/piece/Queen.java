@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 public class Queen extends Piece {
 
