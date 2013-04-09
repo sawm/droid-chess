@@ -11,7 +11,6 @@ public class Square extends ImageView {
 	private String color = new String();
 	private String state = new String(); //states will be "black", "white", or "empty" depending on the piece residing on the square
 	private boolean available = false;
-	private ImageView arrivingPiece;
 	
 	public Square(Context context, Point pos, String col) {
 		super(context);
@@ -43,6 +42,7 @@ public class Square extends ImageView {
 		return position;
 	}
 
+	
 	public String getColor() {
 		return color;
 	}
@@ -62,15 +62,6 @@ public class Square extends ImageView {
 	public void becomeAvailable(Piece piece){
 		this.setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
 		this.setAvailable(true);
-		this.setArrivingPiece(piece);
-	}
-
-	public ImageView getArrivingPiece() {
-		return arrivingPiece;
-	}
-
-	public void setArrivingPiece(ImageView arrivingPiece) {
-		this.arrivingPiece = arrivingPiece;
 	}
 
 }

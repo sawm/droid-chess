@@ -9,6 +9,7 @@ import piece.Queen;
 import piece.Rook;
 import piece.Square;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -18,11 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 
 public class GameActivity extends Activity {
 	private Square[][] squareArray;
@@ -30,12 +29,28 @@ public class GameActivity extends Activity {
 	private ImageView[] black;
 	private Piece activePiece;
 
-	OnClickListener pieceListener = new OnClickListener() {
+	OnClickListener whitePieceListener = new OnClickListener() {
 		@Override
 		public void onClick(View view) {
 			resetColorFilter();
 			resetAvailableMoves();
 			activePiece = (Piece) view;
+			for (int x=0; x < 16 ; x ++){
+				black[x].setOnClickListener(squareListener);
+			}
+			((Piece) view).getMoves(squareArray);
+		}
+	};
+	
+	OnClickListener blackPieceListener = new OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			resetColorFilter();
+			resetAvailableMoves();
+			activePiece = (Piece) view;
+			for (int x=0; x < 16 ; x ++){
+				white[x].setOnClickListener(squareListener);
+			}
 			((Piece) view).getMoves(squareArray);
 		}
 	};
@@ -43,7 +58,23 @@ public class GameActivity extends Activity {
 	OnClickListener squareListener = new OnClickListener() {
 		@Override
 		public void onClick(View view) {
-			Square square = (Square) view;
+			Square square;
+			if ((view instanceof Piece) && !(squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
+				resetColorFilter();
+				resetAvailableMoves();
+				resetOnClicks();
+				return;
+			}
+
+			if ((view instanceof Piece) && (squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
+				square = (Square) squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y];
+				((Piece) view).setActive(false);
+				((Piece) view).setVisibility(View.GONE);
+				
+			} else {
+				square = (Square) view;
+			}
+			
 			if(square.isAvailable()){
 				Display display = getWindowManager().getDefaultDisplay();
 				Point size = new Point();
@@ -51,12 +82,39 @@ public class GameActivity extends Activity {
 				int width = size.x;
 				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width / 8, width / 8);
 				
+				Context context = getApplicationContext();
+				CharSequence text = "Hello toast!";
+				int duration = Toast.LENGTH_SHORT;
+
+			//	Toast toast = Toast.makeText(context, "" + activePiece.getBoardPosition().x + "," + activePiece.getBoardPosition().y, duration);
+			//	toast.show();
+				
+				try{
+					squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
+					if (view instanceof Piece){
+						activePiece.setBoardPosition(((Piece) view).getBoardPosition());
+						squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
+					} else {
+						activePiece.setBoardPosition(((Square) view).getPosition());
+						((Square) view).setState(activePiece.getColor());						
+					}
+					
+				}
+				catch (Exception e) {Toast toast = Toast.makeText(context, ""+ e, duration);
+						toast.show();}
+			
 				lp.topMargin = square.getPosition().y * (width/8);
 				lp.leftMargin = square.getPosition().x * (width/8);
 				activePiece.setLayoutParams(lp);
 				activePiece.setBoardPosition(square.getPosition());
 				resetColorFilter();
 				resetAvailableMoves();
+				resetOnClicks();
+			}
+			else {
+				resetColorFilter();
+				resetAvailableMoves();
+				resetOnClicks();
 			}
 		}
 	};
@@ -164,8 +222,8 @@ public class GameActivity extends Activity {
 		for (int x = 0; x < 16; x++) {
 			white[x].setColorFilter(0x88ffffff, PorterDuff.Mode.SRC_ATOP);
 			black[x].setColorFilter(0x88000000, PorterDuff.Mode.SRC_ATOP);
-			white[x].setOnClickListener(pieceListener);
-			black[x].setOnClickListener(pieceListener);
+			white[x].setOnClickListener(whitePieceListener);
+			black[x].setOnClickListener(blackPieceListener);
 
 		}
 
@@ -243,4 +301,12 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	private void resetOnClicks(){
+		for (int x=0; x < 16 ; x ++){
+			black[x].setOnClickListener(blackPieceListener);
+			white[x].setOnClickListener(whitePieceListener);
+		}
+
+	}
+	
 }
