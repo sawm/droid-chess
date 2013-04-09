@@ -22,6 +22,12 @@ public class Bishop extends Piece {
 		// TODO Auto-generated constructor stub
 	}
 
+//	public void setboardPosition(Point point)
+//	{
+//		this.boardPosition.x = point.x;
+//		this.boardPosition.y = point.y;
+//	}
+	
 	@Override
 	public void getMoves(Square[][] board) {
 		{

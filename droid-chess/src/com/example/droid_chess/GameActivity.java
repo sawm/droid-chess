@@ -28,12 +28,14 @@ public class GameActivity extends Activity {
 	private Square[][] squareArray;
 	private ImageView[] white;
 	private ImageView[] black;
+	private Piece activePiece;
 
 	OnClickListener pieceListener = new OnClickListener() {
 		@Override
 		public void onClick(View view) {
 			resetColorFilter();
 			resetAvailableMoves();
+			activePiece = (Piece) view;
 			((Piece) view).getMoves(squareArray);
 		}
 	};
@@ -43,6 +45,18 @@ public class GameActivity extends Activity {
 		public void onClick(View view) {
 			Square square = (Square) view;
 			if(square.isAvailable()){
+				Display display = getWindowManager().getDefaultDisplay();
+				Point size = new Point();
+				display.getSize(size);
+				int width = size.x;
+				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width / 8, width / 8);
+				
+				lp.topMargin = square.getPosition().y * (width/8);
+				lp.leftMargin = square.getPosition().x * (width/8);
+				activePiece.setLayoutParams(lp);
+				activePiece.setBoardPosition(square.getPosition());
+				resetColorFilter();
+				resetAvailableMoves();
 			}
 		}
 	};
