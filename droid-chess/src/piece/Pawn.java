@@ -21,6 +21,10 @@ public class Pawn extends Piece {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public void moved(){
+		firstMove = false;
+	}
 
 	@Override
 	public void getMoves(Square[][] board) {
@@ -30,7 +34,10 @@ public class Pawn extends Piece {
 		} else {
 			movement = -1;
 		}
-		if(this.boardPosition.y + movement >= 0 && this.boardPosition.y + movement <= 7 && board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){
+		if(this.boardPosition.y + movement >= 0 && this.boardPosition.y + movement <= 7){
+			if (board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){
+				board[this.boardPosition.x][this.boardPosition.y+movement].becomeAvailable(this);
+			}
 			if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y+movement].getState() == this.opp_color){
 				board[this.boardPosition.x+1][this.boardPosition.y+movement].becomeAvailable(this);
 			}

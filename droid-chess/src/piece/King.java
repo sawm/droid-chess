@@ -2,7 +2,6 @@ package piece;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
 public class King extends Piece {
@@ -36,6 +35,20 @@ public class King extends Piece {
 		if(this.boardPosition.y-1 >= 0 && board[this.boardPosition.x][this.boardPosition.y-1].getState() != this.color){
 			board[this.boardPosition.x][this.boardPosition.y-1].becomeAvailable(this);
 		}
+		
+		if(this.boardPosition.y-1 >= 0 && this.boardPosition.x-1 >=0 && board[this.boardPosition.x-1][this.boardPosition.y-1].getState() != this.color){
+			board[this.boardPosition.x-1][this.boardPosition.y-1].becomeAvailable(this);
+		}
+		if(this.boardPosition.y-1 >= 0 && this.boardPosition.x+1 <=7 && board[this.boardPosition.x+1][this.boardPosition.y-1].getState() != this.color){
+			board[this.boardPosition.x+1][this.boardPosition.y-1].becomeAvailable(this);
+		}
+		if(this.boardPosition.y+1 <= 7 && this.boardPosition.x-1 >=0 && board[this.boardPosition.x-1][this.boardPosition.y+1].getState() != this.color){
+			board[this.boardPosition.x-1][this.boardPosition.y+1].becomeAvailable(this);
+		}
+		if(this.boardPosition.y+1 <= 7 && this.boardPosition.x+1 <=7 && board[this.boardPosition.x+1][this.boardPosition.y+1].getState() != this.color){
+			board[this.boardPosition.x+1][this.boardPosition.y+1].becomeAvailable(this);
+		}
+
 
 	}
 

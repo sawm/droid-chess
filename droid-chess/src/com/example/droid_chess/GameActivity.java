@@ -9,7 +9,6 @@ import piece.Queen;
 import piece.Rook;
 import piece.Square;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -59,6 +58,8 @@ public class GameActivity extends Activity {
 		@Override
 		public void onClick(View view) {
 			Square square;
+
+			//If clicked piece is not on an available spot, deselect selected piece
 			if ((view instanceof Piece) && !(squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
 				resetColorFilter();
 				resetAvailableMoves();
@@ -66,11 +67,13 @@ public class GameActivity extends Activity {
 				return;
 			}
 
+			//If clicked piece is on an available spot, reference spot under piece, delete piece
 			if ((view instanceof Piece) && (squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
 				square = (Square) squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y];
 				((Piece) view).setActive(false);
 				((Piece) view).setVisibility(View.GONE);
-				
+
+			//if square clicked is available reference square.
 			} else {
 				square = (Square) view;
 			}
@@ -81,32 +84,24 @@ public class GameActivity extends Activity {
 				display.getSize(size);
 				int width = size.x;
 				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width / 8, width / 8);
-				
-				Context context = getApplicationContext();
-				CharSequence text = "Hello toast!";
-				int duration = Toast.LENGTH_SHORT;
-
-			//	Toast toast = Toast.makeText(context, "" + activePiece.getBoardPosition().x + "," + activePiece.getBoardPosition().y, duration);
-			//	toast.show();
-				
-				try{
-					squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
-					if (view instanceof Piece){
-						activePiece.setBoardPosition(((Piece) view).getBoardPosition());
-						squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
-					} else {
-						activePiece.setBoardPosition(((Square) view).getPosition());
-						((Square) view).setState(activePiece.getColor());						
-					}
-					
+	
+				//Change the square state to empty. Some casting is required, this the test
+				squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
+				if (view instanceof Piece){
+					activePiece.setBoardPosition(((Piece) view).getBoardPosition());
+					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
+				} else {
+					activePiece.setBoardPosition(((Square) view).getPosition());
+					((Square) view).setState(activePiece.getColor());						
 				}
-				catch (Exception e) {Toast toast = Toast.makeText(context, ""+ e, duration);
-						toast.show();}
-			
+					
+				//Move the active piece.
 				lp.topMargin = square.getPosition().y * (width/8);
 				lp.leftMargin = square.getPosition().x * (width/8);
 				activePiece.setLayoutParams(lp);
 				activePiece.setBoardPosition(square.getPosition());
+				if (activePiece instanceof Pawn)
+					{((Pawn) activePiece).moved();}
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
@@ -308,5 +303,7 @@ public class GameActivity extends Activity {
 		}
 
 	}
+	
+	
 	
 }
