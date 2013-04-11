@@ -44,11 +44,14 @@ public class Pawn extends Piece {
 			if(this.boardPosition.x-1 >= 0 && board[this.boardPosition.x-1][this.boardPosition.y + movement].getState() == this.opp_color){
 				board[this.boardPosition.x-1][this.boardPosition.y+movement].becomeAvailable(this);
 			}
-			if(this.firstMove == true &&  board[this.boardPosition.x][this.boardPosition.y+(movement*2)].getState() == "empty"){
-				board[this.boardPosition.x][this.boardPosition.y+(movement*2)].becomeAvailable(this);
+			if (board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){
+				if(this.firstMove == true &&  board[this.boardPosition.x][this.boardPosition.y+(movement*2)].getState() == "empty")
+					board[this.boardPosition.x][this.boardPosition.y+(movement*2)].becomeAvailable(this);
+				board[this.boardPosition.x][this.boardPosition.y+movement].becomeAvailable(this);
 			}
-			board[this.boardPosition.x][this.boardPosition.y+movement].becomeAvailable(this);
-		}		
-	}
+		}
+			
+	}		
+	
 
 }

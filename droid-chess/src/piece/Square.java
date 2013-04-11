@@ -11,6 +11,7 @@ public class Square extends ImageView {
 	private String color = new String();
 	private String state = new String(); //states will be "black", "white", or "empty" depending on the piece residing on the square
 	private boolean available = false;
+	private boolean taken = false;
 	
 	public Square(Context context, Point pos, String col) {
 		super(context);
@@ -57,6 +58,18 @@ public class Square extends ImageView {
 
 	public void setAvailable(boolean availableMove) {
 		this.available = availableMove;
+	}
+	
+	public boolean isTaken(){
+		return taken;
+	}
+	
+	public void setTaken(boolean takenspot){
+		this.taken = takenspot;
+	}
+
+	public void showTaken(){
+		this.setColorFilter(0xAA0000FF);
 	}
 	
 	public void becomeAvailable(Piece piece){

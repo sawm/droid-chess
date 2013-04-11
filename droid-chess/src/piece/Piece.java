@@ -10,6 +10,7 @@ public abstract class Piece extends ImageView {
 	protected String opp_color = new String();
 	protected Point boardPosition = new Point();
 	protected boolean active = true;
+	protected boolean taken = false;
 
 	public Piece(Context context, String color, Point position) {
 		super(context);
@@ -33,7 +34,7 @@ public abstract class Piece extends ImageView {
 	}
 
 	public abstract void getMoves(Square[][] board);
-
+	
 	public Point getBoardPosition() {
 		return boardPosition;
 	}
@@ -56,5 +57,13 @@ public abstract class Piece extends ImageView {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public boolean isTaken(){
+		return taken;
+	}
+	
+	public void setTaken(boolean taken){
+		this.taken = taken;
 	}
 }

@@ -37,7 +37,13 @@ public class GameActivity extends Activity {
 			for (int x=0; x < 16 ; x ++){
 				black[x].setOnClickListener(squareListener);
 			}
+			try{
+			if (view instanceof King)
+				((King) view).getMoves(squareArray, black, getApplicationContext());
+			else
 			((Piece) view).getMoves(squareArray);
+			}
+			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
 	};
 	
@@ -50,7 +56,13 @@ public class GameActivity extends Activity {
 			for (int x=0; x < 16 ; x ++){
 				white[x].setOnClickListener(squareListener);
 			}
+			try{
+			if (view instanceof King)
+				((King) view).getMoves(squareArray, white, getApplicationContext());
+			else
 			((Piece) view).getMoves(squareArray);
+			}
+			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
 	};
 	
@@ -292,10 +304,11 @@ public class GameActivity extends Activity {
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
 				squareArray[x][y].setAvailable(false);
+				squareArray[x][y].setTaken(false);
 			}
 		}
 	}
-
+	
 	private void resetOnClicks(){
 		for (int x=0; x < 16 ; x ++){
 			black[x].setOnClickListener(blackPieceListener);
