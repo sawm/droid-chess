@@ -82,14 +82,14 @@ public class GameActivity extends Activity {
 			//If clicked piece is on an available spot, reference spot under piece, delete piece
 			if ((view instanceof Piece) && (squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
 				square = (Square) squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y];
-				((Piece) view).setActive(false);
-				((Piece) view).setVisibility(View.GONE);
-
+///
+				///
+				///
 			//if square clicked is available reference square.
 			} else {
 				square = (Square) view;
 			}
-			
+try{			
 			if(square.isAvailable()){
 				Display display = getWindowManager().getDefaultDisplay();
 				Point size = new Point();
@@ -102,6 +102,10 @@ public class GameActivity extends Activity {
 				if (view instanceof Piece){
 					activePiece.setBoardPosition(((Piece) view).getBoardPosition());
 					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
+					((Piece) view).setActive(false);
+					((Piece) view).setVisibility(View.GONE);
+					((Piece) view).setBoardPosition(new Point(-1,-1));
+
 				} else {
 					activePiece.setBoardPosition(((Square) view).getPosition());
 					((Square) view).setState(activePiece.getColor());						
@@ -124,6 +128,8 @@ public class GameActivity extends Activity {
 				resetOnClicks();
 			}
 		}
+		catch (Exception e) {Toast.makeText(getApplicationContext(), ""+ e, Toast.LENGTH_SHORT).show();}
+}
 	};
 
 	public static boolean debugging;

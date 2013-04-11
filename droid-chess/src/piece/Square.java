@@ -12,14 +12,24 @@ public class Square extends ImageView {
 	private String state = new String(); //states will be "black", "white", or "empty" depending on the piece residing on the square
 	private boolean available = false;
 	private boolean taken = false;
+	private Context context;
 	
 	public Square(Context context, Point pos, String col) {
 		super(context);
+		this.context = context;
 		this.position = pos;
 		this.setColor(col);
 		this.state = "empty";
 	}
 
+	public Square(Square ins)
+	{
+		super(ins.context);
+		this.position = ins.position;
+		this.color = ins.color;
+		this.state = ins.state;
+	}
+	
 	public Square(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub

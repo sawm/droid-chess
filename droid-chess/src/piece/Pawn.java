@@ -53,5 +53,21 @@ public class Pawn extends Piece {
 			
 	}		
 	
-
+	public void getMoves(Square[][] board, String string) {
+		int movement = 0;
+		if(this.color == "white"){
+			movement = 1;
+		} else {
+			movement = -1;
+		}
+		if(this.boardPosition.y + movement >= 0 && this.boardPosition.y + movement <= 7){
+			if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y+movement].getState() == this.opp_color){
+				board[this.boardPosition.x+1][this.boardPosition.y+movement].becomeAvailable(this);
+			}
+			if(this.boardPosition.x-1 >= 0 && board[this.boardPosition.x-1][this.boardPosition.y + movement].getState() == this.opp_color){
+				board[this.boardPosition.x-1][this.boardPosition.y+movement].becomeAvailable(this);
+			}
+		}
+			
+	}
 }
