@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 public class Knight extends Piece {
 
@@ -23,7 +24,7 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board) {
+	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
 		if(this.boardPosition.x+2 <= 7 && this.boardPosition.y+1 <=7 && board[this.boardPosition.x+2][this.boardPosition.y+1].getState() != this.color){
 			board[this.boardPosition.x+2][this.boardPosition.y+1].becomeAvailable(this);
 		}

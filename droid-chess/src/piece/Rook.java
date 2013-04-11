@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 public class Rook extends Piece {
 
@@ -23,7 +24,7 @@ public class Rook extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board) {
+	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
 		for(int x = this.boardPosition.x+1; x < 8; x++){ //positive x direction
 			if( board[x][this.boardPosition.y].getState() == "empty" ){
 				board[x][this.boardPosition.y].becomeAvailable(this);

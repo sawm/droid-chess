@@ -9,6 +9,7 @@ import piece.Queen;
 import piece.Rook;
 import piece.Square;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ public class GameActivity extends Activity {
 	private ImageView[] white;
 	private ImageView[] black;
 	private Piece activePiece;
-
+	
 	OnClickListener whitePieceListener = new OnClickListener() {
 		@Override
 		public void onClick(View view) {
@@ -41,7 +42,7 @@ public class GameActivity extends Activity {
 			if (view instanceof King)
 				((King) view).getMoves(squareArray, black, getApplicationContext());
 			else
-			((Piece) view).getMoves(squareArray);
+			((Piece) view).getMoves(squareArray,(King)white[3],black);
 			}
 			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
@@ -60,7 +61,7 @@ public class GameActivity extends Activity {
 			if (view instanceof King)
 				((King) view).getMoves(squareArray, white, getApplicationContext());
 			else
-			((Piece) view).getMoves(squareArray);
+			((Piece) view).getMoves(squareArray,(King)black[4],white);
 			}
 			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
@@ -121,6 +122,7 @@ try{
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
+				testForChecks();
 			}
 			else {
 				resetColorFilter();
@@ -323,6 +325,42 @@ try{
 
 	}
 	
-	
+	private void testForChecks(){
+		Piece king = ((King) black[4]);
+		int kingx = ((Piece) black[4]).getBoardPosition().x;
+		int kingy = ((Piece) black[4]).getBoardPosition().y;
+
+		if (((King) king).checkTaken(squareArray, white, kingx, kingy, king.getBoardPosition())){
+			if (((King) king).checkTaken(squareArray, white, kingx+1, kingy, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx, kingy-1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx+1, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx+1, kingy-1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy-1, king.getBoardPosition()))
+				Toast.makeText(getApplicationContext(), "The black king is in checkmate+!", Toast.LENGTH_SHORT).show();
+			else	
+				Toast.makeText(getApplicationContext(), "The black king is in check!", Toast.LENGTH_SHORT).show();
+		}
+
+		king = ((King) white[3]);
+		kingx = ((Piece) white[3]).getBoardPosition().x;
+		kingy = ((Piece) white[3]).getBoardPosition().y;
+
+		if (((King) king).checkTaken(squareArray, black, kingx, kingy, king.getBoardPosition())){
+			if (((King) king).checkTaken(squareArray, black, kingx+1, kingy, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx, kingy-1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx+1, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx+1, kingy-1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy+1, king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy-1, king.getBoardPosition()))
+				Toast.makeText(getApplicationContext(), "The white king is in checkmate+!", Toast.LENGTH_SHORT).show();
+			else	
+				Toast.makeText(getApplicationContext(), "The white king is in check!", Toast.LENGTH_SHORT).show();
+		}
+	}
 	
 }

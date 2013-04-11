@@ -25,7 +25,7 @@ public class King extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board){
+	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece){
 		//Toast.makeText(this.getContext(), "Incorrect getMoves() overload", Toast.LENGTH_SHORT).show();
 	}
 	
@@ -35,51 +35,51 @@ public class King extends Piece {
 		checkTaken(board, enemy_piece);		
 		
 		if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y].getState() != this.color){
-			if (board[this.boardPosition.x+1][this.boardPosition.y].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x+1,this.boardPosition.y,context))
+			if (board[this.boardPosition.x+1][this.boardPosition.y].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x+1,this.boardPosition.y,this.boardPosition))
 				board[this.boardPosition.x+1][this.boardPosition.y].showTaken();
 			else
 				board[this.boardPosition.x+1][this.boardPosition.y].becomeAvailable(this);			
 		}
 		
 		if(this.boardPosition.x-1 >=0 && board[this.boardPosition.x-1][this.boardPosition.y].getState() != this.color){
-			if (board[this.boardPosition.x-1][this.boardPosition.y].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x-1,this.boardPosition.y,context))
+			if (board[this.boardPosition.x-1][this.boardPosition.y].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x-1,this.boardPosition.y,this.boardPosition))
 				board[this.boardPosition.x-1][this.boardPosition.y].showTaken();
 			else
 				board[this.boardPosition.x-1][this.boardPosition.y].becomeAvailable(this);
 		}
 		if(this.boardPosition.y+1 <= 7 && board[this.boardPosition.x][this.boardPosition.y+1].getState() != this.color){
-			if (board[this.boardPosition.x][this.boardPosition.y+1].isTaken())
+			if (board[this.boardPosition.x][this.boardPosition.y+1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x,this.boardPosition.y+1,this.boardPosition))
 				board[this.boardPosition.x][this.boardPosition.y+1].showTaken();
 			else
 				board[this.boardPosition.x][this.boardPosition.y+1].becomeAvailable(this);
 		}
 		if(this.boardPosition.y-1 >= 0 && board[this.boardPosition.x][this.boardPosition.y-1].getState() != this.color){
-			if (board[this.boardPosition.x][this.boardPosition.y-1].isTaken())
+			if (board[this.boardPosition.x][this.boardPosition.y-1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x,this.boardPosition.y-1,this.boardPosition))
 				board[this.boardPosition.x][this.boardPosition.y-1].showTaken();
 			else
 				board[this.boardPosition.x][this.boardPosition.y-1].becomeAvailable(this);
 		}
 		
 		if(this.boardPosition.y-1 >= 0 && this.boardPosition.x-1 >=0 && board[this.boardPosition.x-1][this.boardPosition.y-1].getState() != this.color){
-			if (board[this.boardPosition.x-1][this.boardPosition.y-1].isTaken())
+			if (board[this.boardPosition.x-1][this.boardPosition.y-1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x-1,this.boardPosition.y-1,this.boardPosition))
 				board[this.boardPosition.x-1][this.boardPosition.y-1].showTaken();
 			else
 				board[this.boardPosition.x-1][this.boardPosition.y-1].becomeAvailable(this);
 		}
 		if(this.boardPosition.y-1 >= 0 && this.boardPosition.x+1 <=7 && board[this.boardPosition.x+1][this.boardPosition.y-1].getState() != this.color){
-			if (board[this.boardPosition.x+1][this.boardPosition.y-1].isTaken())
+			if (board[this.boardPosition.x+1][this.boardPosition.y-1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x+1,this.boardPosition.y-1,this.boardPosition))
 				board[this.boardPosition.x+1][this.boardPosition.y-1].showTaken();
 			else
 				board[this.boardPosition.x+1][this.boardPosition.y-1].becomeAvailable(this);
 		}
 		if(this.boardPosition.y+1 <= 7 && this.boardPosition.x-1 >=0 && board[this.boardPosition.x-1][this.boardPosition.y+1].getState() != this.color){
-			if (board[this.boardPosition.x-1][this.boardPosition.y+1].isTaken())
+			if (board[this.boardPosition.x-1][this.boardPosition.y+1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x-1,this.boardPosition.y+1,this.boardPosition))
 				board[this.boardPosition.x-1][this.boardPosition.y+1].showTaken();
 			else
 				board[this.boardPosition.x-1][this.boardPosition.y+1].becomeAvailable(this);
 		}
 		if(this.boardPosition.y+1 <= 7 && this.boardPosition.x+1 <=7 && board[this.boardPosition.x+1][this.boardPosition.y+1].getState() != this.color){
-			if (board[this.boardPosition.x+1][this.boardPosition.y+1].isTaken())
+			if (board[this.boardPosition.x+1][this.boardPosition.y+1].isTaken() || checkTaken(board, enemy_piece,this.boardPosition.x+1,this.boardPosition.y+1,this.boardPosition))
 				board[this.boardPosition.x+1][this.boardPosition.y+1].showTaken();
 			else
 				board[this.boardPosition.x+1][this.boardPosition.y+1].becomeAvailable(this);
@@ -92,9 +92,9 @@ public class King extends Piece {
 		for (int z = 0 ; z < 16; z ++){
 			if (((Piece) enemy_piece[z]).isActive()){
 				if (enemy_piece[z] instanceof Pawn)
-					((Pawn) enemy_piece[z]).getMoves(board,"kingtest");
+					((Pawn) enemy_piece[z]).getMoves(board,this,"kingtest");
 				else	
-					((Piece) enemy_piece[z]).getMoves(board);
+					((Piece) enemy_piece[z]).getMoves(board, this, enemy_piece);
 			}
 			for (int y = 0; y < 8; y ++){
 				for (int x = 0; x < 8; x++){
@@ -109,8 +109,13 @@ public class King extends Piece {
 		return true;
 	}
 	
-	private boolean checkTaken(Square[][] board, ImageView[] enemy_piece,int i,int j, Context context){
+	public boolean checkTaken(Square[][] board, ImageView[] enemy_piece,int i,int j, Point actualLocation){
 
+		if (i < 0 || i > 7)
+			return true;
+		if (j < 0 || j > 7)
+			return true;
+		
 		Square testboard[][] = new Square[8][8];
 		for (int y = 0; y < 8; y ++){
 			for (int x = 0; x < 8; x++){
@@ -118,6 +123,7 @@ public class King extends Piece {
 			}
 		}
 		
+		testboard[actualLocation.x][actualLocation.y].setState("empty");
 		testboard[i][j].setState(this.color);
 //		
 //		
@@ -138,9 +144,9 @@ public class King extends Piece {
 		for (int z = 0 ; z < 16; z ++){
 			if (((Piece) enemy_piece[z]).isActive()){
 				if (enemy_piece[z] instanceof Pawn)
-					((Pawn) enemy_piece[z]).getMoves(testboard,"kingtest");
+					((Pawn) enemy_piece[z]).getMoves(testboard,this,"kingtest");
 				else	
-					((Piece) enemy_piece[z]).getMoves(testboard);
+					((Piece) enemy_piece[z]).getMoves(testboard,this,enemy_piece);
 			}
 			for (int y = 0; y < 8; y ++){
 				for (int x = 0; x < 8; x++){

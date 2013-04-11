@@ -33,7 +33,7 @@ public abstract class Piece extends ImageView {
 		// TODO Auto-generated constructor stub
 	}
 
-	public abstract void getMoves(Square[][] board);
+	public abstract void getMoves(Square[][] board, King king, ImageView[] enemy_piece);
 	
 	public Point getBoardPosition() {
 		return boardPosition;

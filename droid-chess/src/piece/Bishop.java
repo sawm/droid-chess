@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 public class Bishop extends Piece {
 
@@ -29,7 +30,7 @@ public class Bishop extends Piece {
 //	}
 	
 	@Override
-	public void getMoves(Square[][] board) {
+	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
 		{
 			int inc=1;
 			while (this.boardPosition.x+inc <= 7 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() != this.color){

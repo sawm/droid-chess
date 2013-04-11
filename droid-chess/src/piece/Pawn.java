@@ -3,6 +3,7 @@ package piece;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 public class Pawn extends Piece {
 	private boolean firstMove = true;
@@ -27,7 +28,7 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board) {
+	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
 		int movement = 0;
 		if(this.color == "white"){
 			movement = 1;
@@ -35,7 +36,7 @@ public class Pawn extends Piece {
 			movement = -1;
 		}
 		if(this.boardPosition.y + movement >= 0 && this.boardPosition.y + movement <= 7){
-			if (board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){
+			if (board[this.boardPosition.x][this.boardPosition.y+movement].getState() == "empty"){					
 				board[this.boardPosition.x][this.boardPosition.y+movement].becomeAvailable(this);
 			}
 			if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y+movement].getState() == this.opp_color){
@@ -53,7 +54,7 @@ public class Pawn extends Piece {
 			
 	}		
 	
-	public void getMoves(Square[][] board, String string) {
+	public void getMoves(Square[][] board, King king, String string) {
 		int movement = 0;
 		if(this.color == "white"){
 			movement = 1;
