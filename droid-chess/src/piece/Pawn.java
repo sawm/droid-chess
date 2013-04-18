@@ -26,6 +26,10 @@ public class Pawn extends Piece {
 	public void moved(){
 		firstMove = false;
 	}
+	
+	public boolean hasMoved(){
+		return !firstMove;
+	}
 
 	@Override
 	public void getMoves(Square[][] board) {

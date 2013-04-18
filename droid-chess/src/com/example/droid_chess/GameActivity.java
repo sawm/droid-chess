@@ -9,6 +9,8 @@ import piece.Queen;
 import piece.Rook;
 import piece.Square;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -19,14 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class GameActivity extends Activity {
 	private Square[][] squareArray;
-	private ImageView[] white;
-	private ImageView[] black;
+	private Piece[] white;
+	private Piece[] black;
 	private Piece activePiece;
 	
 	OnClickListener whitePieceListener = new OnClickListener() {
@@ -43,11 +44,14 @@ public class GameActivity extends Activity {
 			}
 	
 			//Get the available moves for the piece
-			if (view instanceof King)
-				((King) view).getMoves(squareArray,black);
+			if (view instanceof King){
+				((King) view).getMoves(squareArray,black,!((King)white[3]).hasMoved() && !((Rook)white[0]).hasMoved());
+				if (squareArray[0][0].isAvailable())
+					white[0].setOnClickListener(squareListener);
+			}
 			else
 				((Piece) view).getMoves(squareArray);
-	
+				
 			//Test to see if any available moves would put the king in check
 			for (int y = 0; y < 8; y ++) {
 				for (int x = 0; x < 8; x++) {
@@ -100,8 +104,12 @@ public class GameActivity extends Activity {
 			}
 	
 			//Get the available moves for the piece
-			if (view instanceof King)
-				((King) view).getMoves(squareArray,white);
+			if (view instanceof King){
+				((King) view).getMoves(squareArray,white,!((King)black[4]).hasMoved() && !((Rook)black[7]).hasMoved());
+				if (squareArray[7][7].isAvailable())
+				black[7].setOnClickListener(squareListener);
+
+			}
 			else
 				((Piece) view).getMoves(squareArray);
 	
@@ -148,7 +156,7 @@ public class GameActivity extends Activity {
 		public void onClick(View view) 
 		{
 			Square square;
-						
+									
 			//If the clicked item is a piece, and it is not on an available spot, reset movement and deselect piece
 			if ((view instanceof Piece) && !(squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())) {
 				resetColorFilter();
@@ -164,13 +172,21 @@ public class GameActivity extends Activity {
 			square = (Square) view;
 			}
 			
+			//If the clicked square would put the king in check....
+			if(square.isTaken()){
+				Toast.makeText(getApplicationContext(), "This move would place your king in check", Toast.LENGTH_SHORT).show();
+				resetColorFilter();
+				resetAvailableMoves();
+				resetOnClicks();
+			}
+
 			//If the clicked item is a square, and it is not an available spot, reset movement
 			if(!square.isAvailable()) {
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
 			}
-
+			
 			//If the the second above condition is true, in either case, occupied or empty, process movement.
 			if(square.isAvailable())
 			{
@@ -184,13 +200,26 @@ public class GameActivity extends Activity {
 
 				//Move the piece in the data structures and arrays that keep track of the board
 				squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
-				if (view instanceof Piece)
-				{
+				if (view instanceof Rook && ((Piece)view).getColor() == activePiece.getColor()){
+					RelativeLayout.LayoutParams mp = new RelativeLayout.LayoutParams(width / 8, width / 8);
+					Point p = new Point(activePiece.getBoardPosition());
+					activePiece.setBoardPosition(((Piece) view).getBoardPosition());
+					((Piece)view).setBoardPosition(p);
+					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
+					squareArray[p.x][p.y].setState(((Piece)view).getColor());
+					
+					mp.topMargin = p.y * (width/8);
+					mp.leftMargin = p.x * (width/8);
+					((Piece)view).setLayoutParams(mp);
+					((Piece)view).setBoardPosition(p);
+				} else if (view instanceof Piece) {					
 					activePiece.setBoardPosition(((Piece) view).getBoardPosition());
 					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
+
 					((Piece) view).setActive(false);
 					((Piece) view).setVisibility(View.GONE);
 					((Piece) view).setBoardPosition(new Point(-1,-1));
+
 				} else {
 					activePiece.setBoardPosition(((Square) view).getPosition());
 					((Square) view).setState(activePiece.getColor());						
@@ -209,7 +238,8 @@ public class GameActivity extends Activity {
 					((Rook) activePiece).moved();
 				
 				
-				//Refresh the data structures that keep track of the board, test for checks.
+				//Refresh the data structures that keep track of the board, test for checks and pawn promotion.
+				if (activePiece instanceofPawn)
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
@@ -227,7 +257,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 
-		if (getResources().getString(R.string.debugging) != "true")
+		if (getResources().getString(R.string.debugging) == "true")
 			{((Button) findViewById(R.id.debugButton)).setVisibility(View.GONE);}
 		
 		
@@ -237,17 +267,15 @@ public class GameActivity extends Activity {
 		display.getSize(size);
 		int width = size.x;
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
-		Point position = new Point();
 
 		// Create the board layout
-		createBoardLayout(width, position, layout);
+		createBoardLayout(width, layout);
 		setupPieceImageViews();
-		displayPieces(width, position, layout);
+		displayPieces(width, layout);
 	}
 
-	private void createBoardLayout(int width, Point position,RelativeLayout layout) {
-		position.x = 0;
-		position.y = 0;
+	private void createBoardLayout(int width,RelativeLayout layout) {
+		Point position = new Point(0,0);
 		squareArray = new Square[8][8];
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
@@ -280,7 +308,7 @@ public class GameActivity extends Activity {
 	}
 
 	private void setupPieceImageViews() {
-		white = new ImageView[16];
+		white = new Piece[16];
 		white[0] = new Rook(this, "white", new Point(0, 0));
 		white[0].setImageResource(R.drawable.rook);
 		white[1] = new Knight(this, "white", new Point(1, 0));
@@ -298,7 +326,7 @@ public class GameActivity extends Activity {
 		white[7] = new Rook(this, "white", new Point(7, 0));
 		white[7].setImageResource(R.drawable.rook);
 
-		black = new ImageView[16];
+		black = new Piece[16];
 		black[0] = new Rook(this, "black", new Point(0, 7));
 		black[0].setImageResource(R.drawable.rook);
 		black[1] = new Knight(this, "black", new Point(1, 7));
@@ -333,9 +361,8 @@ public class GameActivity extends Activity {
 
 	}
 
-	private void displayPieces(int width, Point position, RelativeLayout layout) {
-		position.x = 0;
-		position.y = 0;
+	private void displayPieces(int width, RelativeLayout layout) {
+		Point position = new Point(0,0);
 		for (int x = 0; x < 16; x++) {
 			RelativeLayout.LayoutParams pieceParams = new RelativeLayout.LayoutParams(
 					width / 8, width / 8);
@@ -458,20 +485,34 @@ public class GameActivity extends Activity {
 		 * by the debug button on the main screen, which is only viewable when the debug variable is set to true.*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Code to create an alert and display it.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	    final CharSequence[] items = {"Info", "Rename", "Delete"};
+//
+//	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//	    builder.setTitle("Options for test");
+//	    builder.setItems(items, new DialogInterface.OnClickListener() {
+//	        public void onClick(DialogInterface dialog, int item) {
+//	            Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+//	        }
+//	    }).show();		
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Code to draw a color map
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**/		for (int y = 0; y < 8; y ++){
-/**/			for (int x = 0; x < 8; x++){
-/**/				if (squareArray[x][y].getState() == "white")
-/**/					message+= "1";
-/**/				else if (squareArray[x][y].getState() == "black")
-/**/					message+= "2";
-/**/				else
-/**/					message+= "0";
-/**/				
-/**/			}
-/**/			message += "\n";
-/**/		}
+//		for (int y = 0; y < 8; y ++){
+//			for (int x = 0; x < 8; x++){
+//				if (squareArray[x][y].isTaken())
+//					message+= "1";
+//				else if (!squareArray[x][y].isTaken())
+//					message+= "2";
+//				else
+//					message+= "0";
+//				
+//			}
+//			message += "\n";
+//		}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		

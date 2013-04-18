@@ -33,9 +33,31 @@ public class King extends Piece {
 		firstMove = false;
 	}
 	
-	public void getMoves(Square[][] board , ImageView[] enemy_piece) {
+	public boolean hasMoved(){
+		return !firstMove;
+	}
+	
+	public void getMoves(Square[][] board , ImageView[] enemy_piece, Boolean castlable) {
 		
-
+		if (castlable) {
+			if (this.color == "white"){					
+				if (!checkTaken(board, enemy_piece,new Point(0,0),this.boardPosition)){
+					board[0][0].becomeAvailable(this);
+					board[0][0].castle();
+				}
+				else
+					board[0][0].showTaken();
+			}
+			if (this.color == "black"){
+				if (!checkTaken(board, enemy_piece,new Point(7,7),this.boardPosition)){
+					board[7][7].becomeAvailable(this);
+					board[7][7].castle();
+				}
+				else
+					board[7][7].showTaken();
+			}
+			
+		}
 
 		if(this.boardPosition.x+1 <= 7 && board[this.boardPosition.x+1][this.boardPosition.y].getState() != this.color){
 			if (board[this.boardPosition.x+1][this.boardPosition.y].isTaken() || checkTaken(board, enemy_piece,new Point(this.boardPosition.x+1,this.boardPosition.y),this.boardPosition))

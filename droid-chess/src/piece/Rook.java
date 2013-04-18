@@ -28,6 +28,10 @@ public class Rook extends Piece {
 		firstMove = false;
 	}
 	
+	public boolean hasMoved(){
+		return !firstMove;
+	}
+	
 	@Override
 	public void getMoves(Square[][] board) {
 		for(int x = this.boardPosition.x+1; x < 8; x++){ //positive x direction
