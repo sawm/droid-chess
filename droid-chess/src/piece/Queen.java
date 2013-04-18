@@ -24,7 +24,7 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
+	public void getMoves(Square[][] board) {
 		int inc=1;
 		while (this.boardPosition.x+inc <= 7 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() != this.color){
 			board[this.boardPosition.x+inc][this.boardPosition.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);

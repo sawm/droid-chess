@@ -9,7 +9,6 @@ import piece.Queen;
 import piece.Rook;
 import piece.Square;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -31,116 +31,206 @@ public class GameActivity extends Activity {
 	
 	OnClickListener whitePieceListener = new OnClickListener() {
 		@Override
-		public void onClick(View view) {
+		public void onClick(View view)
+		{
 			resetColorFilter();
 			resetAvailableMoves();
 			activePiece = (Piece) view;
-			for (int x=0; x < 16 ; x ++){
-				black[x].setOnClickListener(squareListener);
+	
+			//Disable the onclick listeners of the opposing pieaces
+			for (int x=0; x < 16 ; x ++) {
+			black[x].setOnClickListener(squareListener);
 			}
-			try{
+	
+			//Get the available moves for the piece
 			if (view instanceof King)
-				((King) view).getMoves(squareArray, black, getApplicationContext());
+				((King) view).getMoves(squareArray,black);
 			else
-			((Piece) view).getMoves(squareArray,(King)white[3],black);
+				((Piece) view).getMoves(squareArray);
+	
+			//Test to see if any available moves would put the king in check
+			for (int y = 0; y < 8; y ++) {
+				for (int x = 0; x < 8; x++) {
+					if (squareArray[x][y].isAvailable()) {
+						//Store temporary variables
+						String tmp = squareArray[x][y].getState();
+						squareArray[x][y].setState(activePiece.getColor());
+						squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
+						Piece king = (King) white[3];
+	
+						//Temporarily set the active value of any pieces that can be taken as false (This prevents false positives)
+						for (int z = 0 ; z < 16; z ++) {
+							if (((Piece) black[z]).getBoardPosition().x == x && ((Piece) black[z]).getBoardPosition().y == y)
+							((Piece) black[z]).setActive(false);
+						}
+						
+						//Check if the possible move would put the king in check
+						if (!(view instanceof King) && ((King) king).checkTaken(squareArray, black, new Point(king.getBoardPosition().x, king.getBoardPosition().y), king.getBoardPosition())) {
+							squareArray[x][y].setAvailable(false);
+							squareArray[x][y].showTaken();
+						}
+						
+						//Change the active value of any piece that can be taken back to true
+						for (int z = 0 ; z < 16; z ++) {
+							if (!((Piece) black[z]).getBoardPosition().equals(new Point(-1,-1)) && !((Piece) black[z]).isActive()) {
+							((Piece) black[z]).setActive(true);
+							}
+						}
+						
+						//Restore temporary variables
+						squareArray[x][y].setState(tmp);
+						squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState(activePiece.getColor());
+					}
+				}
 			}
-			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
 	};
 	
 	OnClickListener blackPieceListener = new OnClickListener() {
 		@Override
-		public void onClick(View view) {
+		public void onClick(View view)
+		{
 			resetColorFilter();
 			resetAvailableMoves();
 			activePiece = (Piece) view;
-			for (int x=0; x < 16 ; x ++){
-				white[x].setOnClickListener(squareListener);
+	
+			//Disable the onclick listeners of the opposing pieaces
+			for (int x=0; x < 16 ; x ++) {
+			white[x].setOnClickListener(squareListener);
 			}
-			try{
+	
+			//Get the available moves for the piece
 			if (view instanceof King)
-				((King) view).getMoves(squareArray, white, getApplicationContext());
+				((King) view).getMoves(squareArray,white);
 			else
-			((Piece) view).getMoves(squareArray,(King)black[4],white);
+				((Piece) view).getMoves(squareArray);
+	
+			//Test to see if any available moves would put the king in check
+			for (int y = 0; y < 8; y ++) {
+				for (int x = 0; x < 8; x++) {
+					if (squareArray[x][y].isAvailable()) {
+						//Store temporary variables
+						String tmp = squareArray[x][y].getState();
+						squareArray[x][y].setState(activePiece.getColor());
+						squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
+						Piece king = (King) black[4];
+	
+						//Temporarily set the active value of any pieces that can be taken as false (This prevents false positives)
+						for (int z = 0 ; z < 16; z ++) {
+							if (((Piece) white[z]).getBoardPosition().x == x && ((Piece) white[z]).getBoardPosition().y == y)
+							((Piece) white[z]).setActive(false);
+						}
+						
+						//Check if the possible move would put the king in check
+						if (!(view instanceof King) && ((King) king).checkTaken(squareArray, white, new Point(king.getBoardPosition().x, king.getBoardPosition().y), king.getBoardPosition())) {
+							squareArray[x][y].setAvailable(false);
+							squareArray[x][y].showTaken();
+						}
+						
+						//Change the active value of any piece that can be taken back to true
+						for (int z = 0 ; z < 16; z ++) {
+							if (!((Piece) white[z]).getBoardPosition().equals(new Point(-1,-1)) && !((Piece) white[z]).isActive()) {
+							((Piece) white[z]).setActive(true);
+							}
+						}
+						
+						//Restore temporary variables
+						squareArray[x][y].setState(tmp);
+						squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState(activePiece.getColor());
+					}
+				}
 			}
-			catch (Exception e) {Toast.makeText(getApplicationContext(), ""  + e, Toast.LENGTH_SHORT).show();}
 		}
 	};
 	
 	OnClickListener squareListener = new OnClickListener() {
 		@Override
-		public void onClick(View view) {
+		public void onClick(View view) 
+		{
 			Square square;
-
-			//If clicked piece is not on an available spot, deselect selected piece
-			if ((view instanceof Piece) && !(squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
+						
+			//If the clicked item is a piece, and it is not on an available spot, reset movement and deselect piece
+			if ((view instanceof Piece) && !(squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())) {
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
 				return;
 			}
-
-			//If clicked piece is on an available spot, reference spot under piece, delete piece
-			if ((view instanceof Piece) && (squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())){
-				square = (Square) squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y];
-///
-				///
-				///
-			//if square clicked is available reference square.
-			} else {
-				square = (Square) view;
+			
+			//If clicked piece is on an available spot, and has opposing piece on it, reference spot under piece, prepare to remove piece.
+			if ((view instanceof Piece) && (squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].isAvailable())) {
+			square = (Square) squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y];
+			} else { //if click spot is available and empty, reference spot
+			square = (Square) view;
 			}
-try{			
-			if(square.isAvailable()){
+			
+			//If the clicked item is a square, and it is not an available spot, reset movement
+			if(!square.isAvailable()) {
+				resetColorFilter();
+				resetAvailableMoves();
+				resetOnClicks();
+			}
+
+			//If the the second above condition is true, in either case, occupied or empty, process movement.
+			if(square.isAvailable())
+			{
+				//Get the screen information to redraw the moved piece
 				Display display = getWindowManager().getDefaultDisplay();
 				Point size = new Point();
 				display.getSize(size);
 				int width = size.x;
 				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width / 8, width / 8);
-	
-				//Change the square state to empty. Some casting is required, this the test
+
+
+				//Move the piece in the data structures and arrays that keep track of the board
 				squareArray[activePiece.getBoardPosition().x][activePiece.getBoardPosition().y].setState("empty");
-				if (view instanceof Piece){
+				if (view instanceof Piece)
+				{
 					activePiece.setBoardPosition(((Piece) view).getBoardPosition());
 					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
 					((Piece) view).setActive(false);
 					((Piece) view).setVisibility(View.GONE);
 					((Piece) view).setBoardPosition(new Point(-1,-1));
-
 				} else {
 					activePiece.setBoardPosition(((Square) view).getPosition());
 					((Square) view).setState(activePiece.getColor());						
 				}
-					
-				//Move the active piece.
+
+				//Move the piece on the screen
 				lp.topMargin = square.getPosition().y * (width/8);
 				lp.leftMargin = square.getPosition().x * (width/8);
 				activePiece.setLayoutParams(lp);
 				activePiece.setBoardPosition(square.getPosition());
 				if (activePiece instanceof Pawn)
-					{((Pawn) activePiece).moved();}
+					((Pawn) activePiece).moved();
+				if (activePiece instanceof King)
+					((King) activePiece).moved();
+				if (activePiece instanceof Rook)
+					((Rook) activePiece).moved();
+				
+				
+				//Refresh the data structures that keep track of the board, test for checks.
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
-				testForChecks();
-			}
-			else {
-				resetColorFilter();
-				resetAvailableMoves();
-				resetOnClicks();
+				if (view instanceof King)
+					Toast.makeText(getApplicationContext(), "Winner!", Toast.LENGTH_SHORT).show(); //TODO this must be changed quit the game and declare an actual winner
+				else
+					testForChecks();
 			}
 		}
-		catch (Exception e) {Toast.makeText(getApplicationContext(), ""+ e, Toast.LENGTH_SHORT).show();}
-}
 	};
 
-	public static boolean debugging;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 
+		if (getResources().getString(R.string.debugging) != "true")
+			{((Button) findViewById(R.id.debugButton)).setVisibility(View.GONE);}
+		
+		
 		// Get width of the screen to properly calculate board size
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
@@ -149,14 +239,13 @@ try{
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.screen);
 		Point position = new Point();
 
-//		// Create the board layout
+		// Create the board layout
 		createBoardLayout(width, position, layout);
 		setupPieceImageViews();
 		displayPieces(width, position, layout);
 	}
 
-	private void createBoardLayout(int width, Point position,
-			RelativeLayout layout) {
+	private void createBoardLayout(int width, Point position,RelativeLayout layout) {
 		position.x = 0;
 		position.y = 0;
 		squareArray = new Square[8][8];
@@ -330,15 +419,15 @@ try{
 		int kingx = ((Piece) black[4]).getBoardPosition().x;
 		int kingy = ((Piece) black[4]).getBoardPosition().y;
 
-		if (((King) king).checkTaken(squareArray, white, kingx, kingy, king.getBoardPosition())){
-			if (((King) king).checkTaken(squareArray, white, kingx+1, kingy, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx, kingy-1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx+1, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx+1, kingy-1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, white, kingx-1, kingy-1, king.getBoardPosition()))
+		if (((King) king).checkTaken(squareArray, white, new Point(kingx, kingy), king.getBoardPosition())){
+			if (((King) king).checkTaken(squareArray, white, new Point(kingx+1, kingy), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx-1, kingy), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx, kingy-1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx+1, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx+1, kingy-1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx-1, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, white, new Point(kingx-1, kingy-1), king.getBoardPosition()))
 				Toast.makeText(getApplicationContext(), "The black king is in checkmate+!", Toast.LENGTH_SHORT).show();
 			else	
 				Toast.makeText(getApplicationContext(), "The black king is in check!", Toast.LENGTH_SHORT).show();
@@ -348,19 +437,66 @@ try{
 		kingx = ((Piece) white[3]).getBoardPosition().x;
 		kingy = ((Piece) white[3]).getBoardPosition().y;
 
-		if (((King) king).checkTaken(squareArray, black, kingx, kingy, king.getBoardPosition())){
-			if (((King) king).checkTaken(squareArray, black, kingx+1, kingy, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx, kingy-1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx+1, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx+1, kingy-1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy+1, king.getBoardPosition())
-				&& ((King) king).checkTaken(squareArray, black, kingx-1, kingy-1, king.getBoardPosition()))
+		if (((King) king).checkTaken(squareArray, black, new Point(kingx, kingy), king.getBoardPosition())){
+			if (((King) king).checkTaken(squareArray, black, new Point(kingx+1, kingy), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx-1, kingy), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx, kingy-1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx+1, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx+1, kingy-1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx-1, kingy+1), king.getBoardPosition())
+				&& ((King) king).checkTaken(squareArray, black, new Point(kingx-1, kingy-1), king.getBoardPosition()))
 				Toast.makeText(getApplicationContext(), "The white king is in checkmate+!", Toast.LENGTH_SHORT).show();
 			else	
 				Toast.makeText(getApplicationContext(), "The white king is in check!", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	public void displayDebug(View view){
+		String message = "";
+		/*This is a collection of debugging methods I've created to help in managing the game. If They are activated
+		 * by the debug button on the main screen, which is only viewable when the debug variable is set to true.*/
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Code to draw a color map
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**/		for (int y = 0; y < 8; y ++){
+/**/			for (int x = 0; x < 8; x++){
+/**/				if (squareArray[x][y].getState() == "white")
+/**/					message+= "1";
+/**/				else if (squareArray[x][y].getState() == "black")
+/**/					message+= "2";
+/**/				else
+/**/					message+= "0";
+/**/				
+/**/			}
+/**/			message += "\n";
+/**/		}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Code to draw a map of active pieces
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		for (int y = 0; y < 8; y ++){
+//			for (int x = 0; x < 8; x++){
+//				for (int z = 0; z < 16 ; z++){
+//					if (((Piece)white[z]).getBoardPosition().equals(new Point(x,y)) && ((Piece)white[z]).isActive()){
+//						message += "" + 1;
+//						break;
+//					} else 
+//					if (((Piece)black[z]).getBoardPosition().equals(new Point(x,y)) && ((Piece)black[z]).isActive()){
+//						message += "" + 2;
+//						break;
+//					}
+//					else if (z == 15)
+//						message += "" + 0;
+//				}
+//			}
+//			message += "\n";
+//		}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 	}
 	
 }

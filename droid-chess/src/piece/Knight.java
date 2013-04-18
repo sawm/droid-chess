@@ -24,7 +24,7 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
+	public void getMoves(Square[][] board) {
 		if(this.boardPosition.x+2 <= 7 && this.boardPosition.y+1 <=7 && board[this.boardPosition.x+2][this.boardPosition.y+1].getState() != this.color){
 			board[this.boardPosition.x+2][this.boardPosition.y+1].becomeAvailable(this);
 		}

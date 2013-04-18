@@ -28,7 +28,7 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
+	public void getMoves(Square[][] board) {
 		int movement = 0;
 		if(this.color == "white"){
 			movement = 1;

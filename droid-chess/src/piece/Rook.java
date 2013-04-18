@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 public class Rook extends Piece {
+	private boolean firstMove = true;
 
 	public Rook(Context context, String color, Point position) {
 		super(context, color, position);
@@ -22,9 +23,13 @@ public class Rook extends Piece {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public void moved(){
+		firstMove = false;
+	}
+	
 	@Override
-	public void getMoves(Square[][] board, King king, ImageView[] enemy_piece) {
+	public void getMoves(Square[][] board) {
 		for(int x = this.boardPosition.x+1; x < 8; x++){ //positive x direction
 			if( board[x][this.boardPosition.y].getState() == "empty" ){
 				board[x][this.boardPosition.y].becomeAvailable(this);
