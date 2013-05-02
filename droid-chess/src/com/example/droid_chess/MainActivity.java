@@ -28,6 +28,12 @@ public class MainActivity extends Activity {
     	Intent intent = new Intent(this,GameActivity.class);
     	startActivity(intent);
     }
+        
+    public void networkGame(View view) {
+    	//Open up the window for the network game activity
+    	Intent intent = new Intent(this,NetGameSetup.class);
+    	startActivity(intent);    	
+    }
     
     public void instruction(View view) {
     	//Open up the window for the instructions

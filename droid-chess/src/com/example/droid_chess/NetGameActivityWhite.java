@@ -1,7 +1,5 @@
 package com.example.droid_chess;
 
-import java.util.Random;
-
 import piece.Bishop;
 import piece.King;
 import piece.Knight;
@@ -25,7 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-public class GameActivity extends Activity {
+public class NetGameActivityWhite extends Activity {
 	private Square[][] squareArray;
 	private Piece[] white;
 	private Piece[] black;
@@ -209,7 +207,7 @@ public class GameActivity extends Activity {
 					squareArray[((Piece) view).getBoardPosition().x][((Piece) view).getBoardPosition().y].setState(activePiece.getColor());
 					squareArray[p.x][p.y].setState(((Piece)view).getColor());
 					
-					mp.topMargin = p.y * (width/8);
+					mp.topMargin = (7-p.y) * (width/8);
 					mp.leftMargin = p.x * (width/8);
 					((Piece)view).setLayoutParams(mp);
 					((Piece)view).setBoardPosition(p);
@@ -235,7 +233,7 @@ public class GameActivity extends Activity {
 				}
 					
 				//Move the piece on the screen
-				lp.topMargin = square.getPosition().y * (width/8);
+				lp.topMargin = (7-square.getPosition().y) * (width/8);
 				lp.leftMargin = square.getPosition().x * (width/8);
 				activePiece.setLayoutParams(lp);
 				activePiece.setBoardPosition(square.getPosition());
@@ -275,20 +273,12 @@ public class GameActivity extends Activity {
 		createBoardLayout(width, layout);
 		setupPieceImageViews();
 		displayPieces(width, layout);
-		
-		Random rand = new Random();
-//		try {
-//			while (true){
-				white[rand.nextInt(16)].getMoves(squareArray);
-//			}
-//		}
-//		catch (Exception e) {Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();}
 	}
 
 	private void createBoardLayout(int width,RelativeLayout layout) {
 		Point position = new Point(0,0);
 		squareArray = new Square[8][8];
-		for (int y = 0; y < 8; y++) {
+		for (int y = 7; y > -1; y--) {
 			for (int x = 0; x < 8; x++) {
 				if ((x + y) % 2 == 0) {
 					squareArray[x][y] = new Square(this, new Point(x, y),
@@ -381,7 +371,7 @@ public class GameActivity extends Activity {
 			pieceParams.topMargin = position.y;
 			position.x = (width / 8) * ((x + 1) % 8);
 			position.y = (width / 8) * ((int) Math.floor((x + 1) / 8));
-			layout.addView(white[x], pieceParams);
+			layout.addView(black[x], pieceParams);
 		}
 
 		position.x = 0;
@@ -394,7 +384,7 @@ public class GameActivity extends Activity {
 			position.x = (width / 8) * ((x + 1) % 8);
 			position.y = (7 * (width / 8))
 					- ((width / 8) * ((int) Math.floor((x + 1) / 8)));
-			layout.addView(black[x], pieceParams);
+			layout.addView(white[x], pieceParams);
 		}
 
 	}
@@ -529,4 +519,3 @@ public class GameActivity extends Activity {
 	
 
 }
-

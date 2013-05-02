@@ -3,15 +3,24 @@
 
     <string name="app_name">droid-chess</string>
     <string name="action_settings">Settings</string>
-    
-    
     <string name="title_activity_game">GameActivity</string>
-    <string name="title_activity_chess">Chess</string><string name="title_activity_instructions">Instructions</string><string name="new_local_game">Local Game</string><string name="new_online_game">Online Game</string>
+    <string name="title_activity_chess">Chess</string>
+    <string name="title_activity_instructions">Instructions</string>
+    <string name="new_local_game">Local Game</string>
+    <string name="new_online_game">Online Game</string>
     <string name="view_instructions">Instructions</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-    
     <string name="debugging">true</string>
+
+    <string-array name="colors_array">
+        <item>White</item>
+        <item>Blue</item>
+    </string-array>
+
+    <string name="title_activity_net_game">NetGameActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_net_game_setup">NetGameSetup</string>
 
 </resources>

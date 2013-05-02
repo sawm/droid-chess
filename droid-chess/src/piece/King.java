@@ -9,8 +9,8 @@ import android.widget.ImageView;
 public class King extends Piece {
 	private boolean firstMove = true;
 
-	public King(Context context, String color, Point position) {
-		super(context, color, position);
+	public King(Context context, String color, Point position, int index) {
+		super(context, color, position,index);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -8,8 +8,8 @@ import android.widget.ImageView;
 
 public class Knight extends Piece {
 
-	public Knight(Context context, String color, Point position) {
-		super(context, color, position);
+	public Knight(Context context, String color, Point position,int index) {
+		super(context, color, position, index);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -8,8 +8,8 @@ import android.widget.ImageView;
 
 public class Queen extends Piece {
 
-	public Queen(Context context, String color, Point position) {
-		super(context, color, position);
+	public Queen(Context context, String color, Point position, int index) {
+		super(context, color, position, index);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -22,7 +22,7 @@ public class Queen extends Piece {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	@Override
 	public void getMoves(Square[][] board) {
 		int inc=1;

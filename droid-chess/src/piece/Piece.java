@@ -11,11 +11,13 @@ public abstract class Piece extends ImageView {
 	protected Point boardPosition = new Point();
 	protected boolean active = true;
 	protected boolean taken = false;
+	protected int index = 0;
 
-	public Piece(Context context, String color, Point position) {
+	public Piece(Context context, String color, Point position, int arrayIndex) {
 		super(context);
 		this.setColor(color);
 		this.setBoardPosition(position);
+		this.setIndex(arrayIndex);
 		if(this.color == "white"){
 			this.opp_color = "black";
 		} else {
@@ -34,6 +36,14 @@ public abstract class Piece extends ImageView {
 	}
 
 	public abstract void getMoves(Square[][] board);
+	
+	public int getIndex() {
+		return this.index;
+	}
+	
+	public void setIndex(int arrayIndex) {
+		this.index = arrayIndex;
+	}
 	
 	public Point getBoardPosition() {
 		return boardPosition;

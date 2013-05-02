@@ -38,6 +38,14 @@
             android:name="com.example.droid_chess.Instructions"
             android:label="@string/title_activity_instructions" >
         </activity>
+        <activity
+            android:name="com.example.droid_chess.NetGameActivityWhite"
+            android:label="@string/title_activity_net_game" >
+        </activity>
+        <activity
+            android:name="com.example.droid_chess.NetGameSetup"
+            android:label="@string/title_activity_net_game_setup" >
+        </activity>
     </application>
 
 </manifest>

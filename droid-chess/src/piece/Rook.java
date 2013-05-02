@@ -9,8 +9,8 @@ import android.widget.ImageView;
 public class Rook extends Piece {
 	private boolean firstMove = true;
 
-	public Rook(Context context, String color, Point position) {
-		super(context, color, position);
+	public Rook(Context context, String color, Point position, int index) {
+		super(context, color, position, index);
 		// TODO Auto-generated constructor stub
 	}
 
