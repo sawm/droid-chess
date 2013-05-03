@@ -1,5 +1,6 @@
 package com.example.droid_chess;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import piece.Bishop;
@@ -13,6 +14,7 @@ import piece.Square;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -30,6 +32,8 @@ public class GameActivity extends Activity {
 	private Piece[] white;
 	private Piece[] black;
 	private Piece activePiece;
+	private boolean test;
+	private testing t;
 	
 	OnClickListener whitePieceListener = new OnClickListener() {
 		@Override
@@ -154,7 +158,7 @@ public class GameActivity extends Activity {
 	
 	OnClickListener squareListener = new OnClickListener() {
 		@Override
-		public void onClick(View view) 
+		public void onClick(View view)
 		{
 			Square square;
 									
@@ -250,8 +254,12 @@ public class GameActivity extends Activity {
 				resetColorFilter();
 				resetAvailableMoves();
 				resetOnClicks();
-				if (view instanceof King)
-					Toast.makeText(getApplicationContext(), "Winner!", Toast.LENGTH_SHORT).show(); //TODO this must be changed quit the game and declare an actual winner
+				if (view instanceof King){
+					t.stop();
+			    	Toast.makeText(getApplicationContext(), "Winner!", Toast.LENGTH_LONG).show(); //TODO this must be changed quit the game and declare an actual winner
+					Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+			    	startActivity(intent);
+				}
 				else
 					testForChecks();
 			}
@@ -264,6 +272,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 
+		test = true;
 		// Get width of the screen to properly calculate board size
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
@@ -276,13 +285,8 @@ public class GameActivity extends Activity {
 		setupPieceImageViews();
 		displayPieces(width, layout);
 		
-		Random rand = new Random();
-//		try {
-//			while (true){
-				white[rand.nextInt(16)].getMoves(squareArray);
-//			}
-//		}
-//		catch (Exception e) {Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_SHORT).show();}
+		t = new testing();
+		t.start();
 	}
 
 	private void createBoardLayout(int width,RelativeLayout layout) {
@@ -491,6 +495,7 @@ public class GameActivity extends Activity {
 	}
 	
 	public void promoSelect(){
+		if (test == false){
 	    final CharSequence[] items = {"Queen", "Rook", "Bishop","Knight"};
 
 	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -522,11 +527,151 @@ public class GameActivity extends Activity {
 	        	}
 	        	
 	        	
-	            Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
 	        }
 	    }).show();
+		} else {
+			Random rand = new Random();
+			switch (rand.nextInt(4)){
+	        	case 0:{
+					activePiece.setImageResource(R.drawable.queen);
+					((Pawn)activePiece).promote("queen");
+					break;
+	        	}
+	        	case 1:{
+					activePiece.setImageResource(R.drawable.rook);
+					((Pawn)activePiece).promote("rook");
+					break;
+	        	}
+	        	case 2:{
+					activePiece.setImageResource(R.drawable.bishop);
+					((Pawn)activePiece).promote("bishop");
+					break;
+	        	}
+	        	case 3:{
+					activePiece.setImageResource(R.drawable.knight);
+					((Pawn)activePiece).promote("knight");		        		
+					break;
+	        	}
+			}
+			
+		}
 	}
 	
+	private void diagnosticTesting(String color){
+		Piece p;
+		boolean validMoves = false;
+		Random rand = new Random();
+		ArrayList<Point> a = new ArrayList<Point>();
+		if (color == "white"){
+			do{
+					validMoves = false;
+					a.clear();
+					p = white[rand.nextInt(16)];
+					if( p.getBoardPosition().x != -1) {
+					p.getMoves(squareArray);
+					for (int y = 0; y < 8 ; y++){
+						for (int x = 0; x < 8; x++){
+							if (squareArray[x][y].isAvailable())
+								validMoves = true;
+						}
+					}
+					for (int y = 0; y < 8 ; y++){
+						for (int x = 0; x < 8; x++){
+							if (squareArray[x][y].isAvailable())
+								a.add(new Point(x,y));
+						}
+					}
+		     //       Toast.makeText(getApplicationContext(), "" + p + " " + a.size(), Toast.LENGTH_SHORT).show();
+					}
+				}while (!validMoves);
+		
+		   //     Toast.makeText(getApplicationContext(), "Found :" + p + " " + a.size(), Toast.LENGTH_SHORT).show();
+				activePiece = p;
+		        
+				Point po = a.get(rand.nextInt(a.size()));
+				boolean needed = true;
+				for (int z = 0 ; z < 16 ; z++){
+					if (black[z].getBoardPosition().equals(po)){
+						if (black[z] instanceof King)
+							t.stop();
+						squareListener.onClick(black[z]);
+						needed = false;
+					}
+				}
+				if (needed)
+				squareListener.onClick(squareArray[po.x][po.y]);
+		}
+////////////////////////////////////////////////////////////////////////////////////////////////////			
+		if (color == "black"){
+			do{
+				validMoves = false;
+				a.clear();
+				p = black[rand.nextInt(16)];
+				if( p.getBoardPosition().x != -1) {
+					p.getMoves(squareArray);
+					for (int y = 0; y < 8 ; y++){
+						for (int x = 0; x < 8; x++){
+							if (squareArray[x][y].isAvailable())
+								validMoves = true;
+						}
+					}
+					for (int y = 0; y < 8 ; y++){
+						for (int x = 0; x < 8; x++){
+							if (squareArray[x][y].isAvailable())
+								a.add(new Point(x,y));
+						}
+					}
+		       //     Toast.makeText(getApplicationContext(), "" + p + " " + a.size(), Toast.LENGTH_SHORT).show();
+			}
+			}while (!validMoves);
+	
+	 //       Toast.makeText(getApplicationContext(), "Found :" + p + " " + a.size(), Toast.LENGTH_SHORT).show();
+			activePiece = p;
+	        
+			Point po = a.get(rand.nextInt(a.size()));
+			boolean needed = true;
+			for (int z = 0 ; z < 16 ; z++){
+				if (white[z].getBoardPosition().equals(po)){
+					if (white[z] instanceof King)
+						t.stop();
+					squareListener.onClick(white[z]);
+					needed = false;
+				}
+			}
+			if (needed)
+				squareListener.onClick(squareArray[po.x][po.y]);
+		}
+	}
 
+	public class testing extends Thread{
+		 public void run() {
+			while (true){
+			    new Thread(new Runnable() {
+			        public void run() {
+			            final Piece p = white[1];
+			            p.post(new Runnable() {
+			                public void run() {
+					    		diagnosticTesting("white"); //TODO 
+			                }
+			            });
+			        }
+			    }).start();
+			
+			try{Thread.sleep(250);}catch (Exception e) {}
+		    new Thread(new Runnable() {
+		        public void run() {
+		            final Piece p = white[1];
+		            p.post(new Runnable() {
+		                public void run() {
+				    		diagnosticTesting("black"); //TODO 
+		                }
+		            });
+		        }
+		    }).start();
+		    
+			try{Thread.sleep(250);}catch (Exception e) {}
+			}
+		}
+	}
 }
 
