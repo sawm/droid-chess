@@ -25,34 +25,39 @@ public class Queen extends Piece {
 	
 	@Override
 	public void getMoves(Square[][] board) {
-		int inc=1;
-		while (this.boardPosition.x+inc <= 7 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() != this.color){
-			board[this.boardPosition.x+inc][this.boardPosition.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
-			board[this.boardPosition.x+inc][this.boardPosition.y+inc].setAvailable(true);
-			if (board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() == this.opp_color) {break;}
-			inc ++;
+		{
+			int inc=1;
+			while (this.boardPosition.x+inc <= 7 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() != this.color){
+				board[this.boardPosition.x+inc][this.boardPosition.y+inc].becomeAvailable(this);
+				if (board[this.boardPosition.x+inc][this.boardPosition.y+inc].getState() == this.opp_color) {break;}
+				inc ++;
+			}
 		}
-		inc=1;
-		while (this.boardPosition.x-inc >= 0 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x-inc][this.boardPosition.y+inc].getState() != this.color){
-			board[this.boardPosition.x-inc][this.boardPosition.y+inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
-			board[this.boardPosition.x-inc][this.boardPosition.y+inc].setAvailable(true);
-			if (board[this.boardPosition.x-inc][this.boardPosition.y+inc].getState() == this.opp_color) {break;}
-			inc ++;
+		{
+			int inc=1;
+			while (this.boardPosition.x-inc >= 0 && this.boardPosition.y+inc <= 7 && board[this.boardPosition.x-inc][this.boardPosition.y+inc].getState() != this.color){
+				board[this.boardPosition.x-inc][this.boardPosition.y+inc].becomeAvailable(this);
+				if (board[this.boardPosition.x-inc][this.boardPosition.y+inc].getState() == this.opp_color) {break;}
+				inc ++;
+			}
 		}
-		inc=1;
-		while (this.boardPosition.x+inc <= 7 && this.boardPosition.y-inc >= 0 && board[this.boardPosition.x+inc][this.boardPosition.y-inc].getState() != this.color){
-			board[this.boardPosition.x+inc][this.boardPosition.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
-			board[this.boardPosition.x+inc][this.boardPosition.y-inc].setAvailable(true);
-			if (board[this.boardPosition.x+inc][this.boardPosition.y-inc].getState() == this.opp_color) {break;}
-			inc ++;
+		{
+			int inc=1;
+			while (this.boardPosition.x+inc <= 7 && this.boardPosition.y-inc >= 0 && board[this.boardPosition.x+inc][this.boardPosition.y-inc].getState() != this.color){
+				board[this.boardPosition.x+inc][this.boardPosition.y-inc].becomeAvailable(this);
+				if (board[this.boardPosition.x+inc][this.boardPosition.y-inc].getState() == this.opp_color) {break;}
+				inc ++;
+			}
 		}
-		inc=1;
-		while (this.boardPosition.x-inc >= 0 && this.boardPosition.y-inc >= 0 && board[this.boardPosition.x-inc][this.boardPosition.y-inc].getState() != this.color){
-			board[this.boardPosition.x-inc][this.boardPosition.y-inc].setColorFilter(0xAAFF0000, PorterDuff.Mode.SRC_ATOP);
-			board[this.boardPosition.x-inc][this.boardPosition.y-inc].setAvailable(true);
-			if (board[this.boardPosition.x-inc][this.boardPosition.y-inc].getState() == this.opp_color) {break;}
-			inc ++;
+		{
+			int inc=1;
+			while (this.boardPosition.x-inc >= 0 && this.boardPosition.y-inc >= 0 && board[this.boardPosition.x-inc][this.boardPosition.y-inc].getState() != this.color){
+				board[this.boardPosition.x-inc][this.boardPosition.y-inc].becomeAvailable(this);
+				if (board[this.boardPosition.x-inc][this.boardPosition.y-inc].getState() == this.opp_color) {break;}
+				inc ++;
+			}
 		}
+
 	
 	for(int x = this.boardPosition.x+1; x < 8; x++){ //positive x direction
 		if( board[x][this.boardPosition.y].getState() == "empty" ){

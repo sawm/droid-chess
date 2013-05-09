@@ -35,6 +35,11 @@ public class GameActivity extends Activity {
 	private boolean test;
 	private testing t;
 	
+	public void startTesting(View view){
+		t = new testing();
+		t.start();
+		}
+	
 	OnClickListener whitePieceListener = new OnClickListener() {
 		@Override
 		public void onClick(View view)
@@ -284,9 +289,6 @@ public class GameActivity extends Activity {
 		createBoardLayout(width, layout);
 		setupPieceImageViews();
 		displayPieces(width, layout);
-		
-		t = new testing();
-		t.start();
 	}
 
 	private void createBoardLayout(int width,RelativeLayout layout) {
